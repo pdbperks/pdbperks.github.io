@@ -1,0 +1,213 @@
+/*CSS file for blog page */
+
+/* comments are delineated by slash star whether they are single line*/ 
+/*
+or multi-line
+
+to modify the h2 tag -
+tag_selector {property:value;}
+eg 
+*/
+
+h2 {
+  font-size:240%;
+  color:pink;
+  padding-left:2px;
+  text-shadow:2px 2px 2px #444;
+  margin-right:40px;
+  background-image:url('../CE00991-7/images/diGbeth01.jpg');
+ background-position: -400px 2100px;
+}
+
+body {
+  font-family:arial;
+  background:#ffffff;
+  color:#666666;
+  max-width:100%;
+}
+
+a:link {
+  color:#9999a6;
+   /* background-color:#333333;*/
+     text-shadow:1px 1px 1px pink;
+  /*text-decoration:none;*/
+}
+
+a:hover {
+  color:#9999a6;
+content: attr(href);
+     text-shadow:1px 1px 1px #aaaaaa;  
+    /*  background-color:#333333;*/
+  /*text-decoration:none;*/
+}
+
+a:visited {
+  color:#888888;
+  /*text-decoration:none;*/
+}
+/* modify all paragraphs  background-color:#111111*/ 
+p { 
+  text-align:justify;
+  margin-left:10px; 
+  margin-right:40px;
+ }
+ 
+ pre{
+  margin-left:10px; 
+  margin-right:40px;  
+}
+ 
+ /*
+ b { 
+  margin-left:-10px;
+  text-shadow:2px 2px 2px #222;
+ }
+ 
+highlighting the blog dates by modifying the <b> tag means bold cannot be
+used in its natural fuction - set a div for the dates - see below
+although ID appears to satisfy this task, because there are multiple examples
+we should use class
+so instead of  #dateTitle 
+we use
+ */
+
+ .dateTitle { 
+   clear:both;
+  margin-left:10px;
+  margin-right:40px;
+  padding:2px;
+  text-shadow:1px 1px 1px #222;
+  background-color:#ffdddd;
+}
+ 
+/* and in the html code we write 
+<div class='dateTitle'>Wednesday 25th September2013</div>
+or, if we write 
+<span class='dateTitle'>Wednesday 25th September2013</span>
+then the background is only as wide as the text 
+(it's embedded - it doesn't include auto paragraph break like div or H1)
+ */ 
+
+
+
+/*imgGantt is #ID for an img */
+#imgGantt {
+  margin-left:10px;
+  margin-right:40px;
+  height:400px;
+  background-image:url('../CE00991-7/images/Gantt02.png');
+  
+  background-repeat: no-repeat;
+  /*background-attachment:fixed;border:5px solid
+#222222;background-position:center top;background-clip:
+border-box;background-color: #111111;*/
+  
+  } 
+/*background-position: -400px 2100px;*/
+#headIcon {
+  position:fixed;
+  top:35px;
+  right:5px;
+ }
+
+
+/*provide a style for smaller text eg image subtitles*/
+.small {
+  font-size:80%;
+}
+
+/*provide all images with a 2px padding  - comment out to avoid cascade problems*/
+p img { 
+  padding:8px;
+}
+
+ul
+{
+   text-align:justify;
+  margin-left:10px; 
+  margin-right:40px; 
+  
+}
+
+
+/**/
+/*use CSS to hide element - set anchor style*/
+.extraNotes {
+  text-decoration:none;
+       text-shadow:1px 1px 1px red;
+}
+/*use CSS to hide element - move content off screen*/
+.extraNotes div {
+  position: absolute;
+  max-width:180em;
+  left: -200em;
+}
+
+.extraNotes:hover {
+    cursor:pointer;
+}
+
+/*use CSS to show element  - shows list against background*/
+.extraNotes:hover div {
+text-decoration:none;
+     text-shadow:none;
+     cursor:text;
+background:white;
+padding:4px;
+  position: absolute;
+   left:inherit;
+  right:inherit; 
+  width:70%;
+  border:1px solid #666666;
+  /*top:0em;
+-moz-transition: 0.5s all; -webkit-transition: 0.5s all; 
+-o-transition: 0.5s all; transition: 0.5s all; */
+}
+
+
+.dateContent {
+ margin-left:10px; 
+  margin-right:40px; 
+
+}
+
+.dateContent div {
+ display:none;
+}
+
+#toggleDateContent:checked ~ div{
+
+ display:inline;
+}
+
+#toggleDateContent {opacity:1}
+
+#toggleDateContent:hover {opacity:.5}
+/*
+ Chapter 6 Storey, d Pro Css Animation
+ 
+ */
+
+div#slideshow { position: relative; background: inherit; overflow: hidden;  
+margin-left:10px; 
+  margin-right:40px;} 
+figure#imagestrip, div#slideshow { box-sizing: border-box; } 
+div#slideshow, figure#imagestrip img { width: 240px; height: 135px; float:
+left; padding:0px} 
+figure#imagestrip { position: absolute; width: 1440px; margin: 0; } 
+
+@keyframes slider { 
+0%  { transform: translateX(0px); } 
+15% { transform: translateX(0px); } 
+20% { transform: translateX(-240px); } 
+35% { transform: translateX(-240px); } 
+40% { transform: translateX(-480px); } 
+55% { transform: translateX(-480px); } 
+60% { transform: translateX(-720px); } 
+75% { transform: translateX(-720px); } 
+80% { transform: translateX(-960px); } 
+95% { transform: translateX(-960px); }
+100% { transform: translateX(-1200px); } 
+} 
+
+figure#imagestrip { animation: slider 10s infinite; } 
