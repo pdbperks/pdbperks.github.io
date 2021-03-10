@@ -1,15 +1,3 @@
-<?php 
-header("Cache-Control: no-cache");
-session_start();
-
-//$used= $_SESSION['used'];//$_GET['used'];
-//if ($routine==NULL) $routine='splash';
-//$site="http://".$_SERVER['SERVER_ADDR'];
-$site="http://".$_SERVER['SERVER_NAME'];
-
-$self = $_SERVER['PHP_SELF'];
-?>
-
 <HTML>
 <HEAD>
 <TITLE>Real Perks</TITLE>
@@ -29,7 +17,7 @@ Computer Chip Photo garden Thatcher">
 function write_poem(){
 
 for(x=0;x<16;x++){
-num = Math.round(Math.random()*  928);
+num = Math.round(Math.random()*  100);
 
 amphibian = sun[num];
 document.write( amphibian +"  ");}
