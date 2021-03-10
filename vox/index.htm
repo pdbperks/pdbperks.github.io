@@ -34,10 +34,28 @@ height: 100%;
 position: relative;
 /*position: absolute; left: 0; right: 0; top: 0; bottom: 0;*/
 } 
+	
+#request {
+  display: true;
+  position: fixed;
+  top: 0px;
+  z-index: 99;
+  font-size: 18px;
+  border: none;
+  outline: none;
+  background-color: rgba(0, 0, 0, 0.1);
+  color: rgba(255,255, 255, 0.5);
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 3px;
+}
+	
+	
 </style>
 
 </head>
-<body>
+<body onload="check()">>
+	<button id="request" title="Tap Here">Tap Here to enable orientation tracking</button>
 	<center>
   <h1>CLANGERMIN</h1>
   
@@ -187,6 +205,53 @@ oscillator.start(now);
 oscillator.stop(now + 1);
 }
 
+function check() {
+    var match = (navigator.appVersion).match(/OS (\d+)_(\d+)_?(\d+)?/),
+        version;
+
+    if (match !== undefined && match !== null) {
+        version = [
+            parseInt(match[1], 10),
+            parseInt(match[2], 10),
+            parseInt(match[3] || 0, 10)
+        ];
+        ver=parseFloat(version.join('.'));
+	if (ver < 13) {
+            document.getElementById('request').style.visibility = 'hidden';
+        } else {
+            document.getElementById('request').style.visibility = 'visible';
+        }
+
+    }
+    else {
+	document.getElementById('request').style.visibility = 'hidden';
+	}
+}
+  if (location.protocol != 'https:') {
+   location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
+  }
+ 
+function requestT () {
+      if (typeof(DeviceMotionEvent) !== 'undefined' && typeof(DeviceMotionEvent.requestPermission) === 'function') {
+          
+          DeviceMotionEvent.requestPermission()
+          .then(response => {
+	alert('Orientation tracking '+ response);
+          
+            if (response == 'granted') {
+              window.addEventListener('devicemotion', (e) => {
+               document.getElementById('request').style.visibility='hidden';
+              })
+            }
+          })
+      .catch(console.error)
+      }else {
+          alert('DeviceMotionEvent is not defined');
+      }
+
+  }
+  document.getElementById('request').onclick = requestT;
+	
     </script>
   </body>
 </html>      
