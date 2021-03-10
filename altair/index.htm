@@ -1,0 +1,291 @@
+<HTML>
+
+<HEAD>
+
+<TITLE>Real Perks</TITLE>
+
+<META NAME="description"CONTENT="objects to poetry.">
+
+<META NAME="owner"CONTENT="pdbperks@gmail.com">
+
+<META NAME="author"CONTENT="pdbperks">
+
+<META NAME="keywords"CONTENT="pic art maker">
+
+<style>
+
+@import url("../css/blog.css");
+
+</style>
+</HEAD>
+
+
+
+<BODY BGCOLOR="#000000"text="#666666"LINK="#9999a6"ALINK="#808080"VLINK="#666666">
+
+
+
+
+
+<a href = "../index.php"><IMG id="headIcon"
+
+align=right WIDTH=32 HEIGHT=38 BORDER=0
+
+ALT="Perks" SRC="../head.gif"></A>
+
+
+
+
+
+<h2>Altair 8800 emulator for BBC micro:bit.</h2><p align=left>
+<p>
+<div class='dateTitle'>Monday 25 May 2020. Digirule 2A</div>
+
+<p>
+<img src="images/digirule.jpg">
+<p>
+One of the young digital makers at Stafford Raspberry Pi Jam had a <a href='https://bradsprojects.com/digirule2/'>Digirule 2</a>, a programmable binary computer built into a PCB ruler. I wanted one instantly; but Brad only has them manufactured in small batches and, as the product is popular, it is usually out of stock. I put my name on the waiting list and in passing the time, researched the Altair 8800 computer system that had inspired his project.
+ 
+
+
+<div class='dateTitle'>Tueday 26 May 2020. Altair emulator</div>
+<p>
+<a title="Todd Dailey / CC BY-SA (https://creativecommons.org/licenses/by-sa/2.0)" href="https://commons.wikimedia.org/wiki/File:Altair_8800_at_the_Computer_History_Museum,_cropped.jpg"><img width="1024" alt="Altair 8800 at the Computer History Museum, cropped" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Altair_8800_at_the_Computer_History_Museum%2C_cropped.jpg/1024px-Altair_8800_at_the_Computer_History_Museum%2C_cropped.jpg"></a>
+<p>
+An original MITS Altair (from early 1975) is a rarity but there is a good <a href='https://s2js.com/altair/'>virtual emulator</a> on the web with interesting support notes and links to an <a href = 'http://www.classiccmp.org/dunfield/altair/d/88opman.pdf'>original manual</a>.
+
+<p>
+<div class='dateTitle'>Tueday 26 May 2020. BBC micro:bit</div>
+<p>
+I bought one of Brad's computers as soon as I was notified that they were back in stock. It's a great piece of kit; entertaining and educational. I kept thinking that it should be possible to create a similar 8-bit computer using the BBC micro:bit, a single-board pocket-sized computer. This week I was inspired to achieve that objective. The picture below shows the micro:bit using <a href='altair_25.py'>microPython code</a> to emulate the Altair 8800 with just enough instructions implemented to run the simple program example from the manual, 'to add two numbers located at two memory locations and store the result elsewhere in memory.' The photo shows the emulator at address 0x03 with op code 0x47 MOV(A->B).  
+<p>
+<img src="images/microbit03.jpg">
+<p>
+A number of issues needed to be addressed in order to adapt to the different form factor. The 5x5 grid does not allow for a row of 8 indicators and two buttons are far less than the inputs available on the Altair or Digirule.
+<p>
+The micro:bit does however, feature an accelerometer and we can use this to add extra calibration to button presses. By reading the tilt roll value we can toggle different LEDs across our grid and the tilt pitch will allow us to select rows. Since it will be sensible to split our 8-bit indicator into two rows of 4-bits, this leaves a spare row and column to provide visual feedback on which LED is about to be toggled. We can therefore, accurately select 16 LEDs using button A and the accelerometer: in fact, we only really need to select 8 LEDs to provide data input. We will use the bottom two rows for data input and the next two rows to show the program address. Button B will be used to navigate the memory addresses.
+<p>  
+My first prototype was written using <a href='https://makecode.microbit.org/'>makecode blocks</a> and although this was progressing well, a number of considerations made me decide to move to microPython. 
+<ul><li>It is possible to access the micro:bit's <a href='https://github.com/bbcmicrobit/micropython/blob/master/examples/asmleds.py'>inline assembler from Python</a>.
+<li>I could integrate an <a href='https://github.com/matthewmpalen/py-i8080'>Intel 8080 emulator</a> written in Python.
+<li>Python seemed to offer better control of button presses, particularly in the  get_presses() function which was to prove very useful.
+</ul>
+<p>
+The project progressed much faster than I anticipated and even the implementation of programming features was easier than I expected.  I plan to add more instructions in the future but the emulator already demonstrates 8-bit programming with the ability to save and load programs: it also works as a simple binary to decimal or hexadecimal translator.
+<p>
+The button functions are outlined in the image above but to recap: 
+<ul>
+<b>Button A:</b> press to toggle data LED. Long press to clear data LEDs. 
+
+<li>Run: Hold Button A, press button B once. Release both buttons. 
+<li>Load: Hold Button A, press button B twice. Release both buttons.
+<li>Save: Hold Button A, press button B thrice. Release both buttons.
+<li>Trace: Hold Button A, press button B four times. Release both buttons.
+
+</ul>
+<ul>
+<b>Button B:</b> press for decimal. Long press hexadecimal. 
+
+<li>Write. PC++: Hold Button B, press button A once. Release both buttons. 
+<li>PC--. Read: Hold Button B, press button A twice. Release both buttons.
+<li>Goto: Hold Button B, press button A thrice. Release both buttons.
+</ul>
+<p>
+<p>
+<div class='dateTitle'>Wednesday 27 May 2020. Implementing op codes</div>
+<p>
+Here is a list of the implemented operating codes using the Accumulator and Register B. I am providing two address bytes although one would be perfectly functional since program memory is currently set at 256 bytes. This is the updated list of implemented operating codes.
+<p>
+
+<pre>
+Decimal Hex Binary  Mnemonic    Bytes   Action
+7   0x07    0000 0111   RLC     1   Accumulator bit shift left
+13  0x0D    0000 1101   DECC    1   Register C - 1
+15  0x0F    0000 1111   RRC     1   Accumulator bit shift left
+50  0x32    0011 0001   STA     3   Store Accumulator in address
+58  0x3A    0011 1010   LDA     3   Load Accumulator with contents of address
+60  0x3C    0011 1100   INRA    1   Accumulator + 1
+61  0x3D    0011 1101   DCRA    1   Accumulator - 1
+71  0x47    0100 0111   MOVBA   1   Move Accumulator to Register B
+79  0x4F    0100 1111   MOVCA   1   Move Accumulator to Register C
+118 0x76    0111 0110   HLT     1   Halt program execution
+128 0x80    1000 0000   ADDB    1   Add Register B to Accumulator 
+160 0xA0    1010 0000   ANAB    1   Bitwise Accumulator & Register B 
+168 0xA8    1010 1000   XRAB    1   Bitwise Accumulator ^ Register B 
+175 0xAF    1010 1111   ANAA    1   Bitwise Accumulator ^ Accumulator 
+176 0xB0    1011 0000   ORAB    1   Bitwise Accumulator | Register B
+194 0xC2    1100 0010   JNZ     3   Jump to address if zeroflag false 
+195 0xC3    1100 0111   JMP     3   Jump to address
+</pre>
+On reboot, the emulator will have a clear memory. If you load a program (A, 3 clicks B) it will load the sample program given in the Altair manual. If you have saved your own program then that will be loaded. You can toggle a trace feature for the contents of the Accumulator (A, 4 clicks B) which is useful for debugging.
+<p>
+<pre>
+Add Mnemonic  Binary     Action
+0   LDA     0011 1010   Load Accumulator with contents of address
+1           0000 1100   Address
+2           0000 0000   Address
+3   MOVAB   0100 0111   Move accumulator to Register B
+4   LDA     0011 1010   Load Accumulator with contents of address
+5           0000 1101   Address
+6           0000 0000   Address
+7   ADDB    1000 0000   Add Register B to Accumulator
+8   STA     0011 0010   Store Accumulator in address
+9           0000 1111   Address
+10          0000 0000   Address
+11  HLT     0111 0110   Halt program
+12          0000 0001   Data
+13          0000 0010   Data
+14          0000 0100   Data
+15          0000 0000   Data
+16  LDA     0011 1010   Load Accumulator with contents of address
+17          0000 1110   Address
+18          0000 0000   Address
+19  MOVCA   0100 1111   Move accumulator to Register C 
+20  INRA    0011 1100   Accumulator + 1
+21  DECC    0000 1101   Register C - 1
+22  JNZ     1100 0010   Jump to address if zeroflag false
+23          0001 0100   Address
+24          0000 0000   Address
+25  STA     0011 0010   Store Accumulator in address
+26          0000 1111   Address
+27          0000 0000   Address
+28  HLT     0111 0110   Halt program
+</pre>
+<div class='dateTitle'>Sunday 31 May 2020. GitHub repository</div>
+<p>
+The <a href='https://github.com/pdbperks/altair8800'>code is now hosted on GitHub</a> although the hex file is still downloadable from the bottom of this page. Changes to the implemented opcodes and sample programs have been updated above.
+<p>
+Adding additional op codes and another program sample generated some surprises and lead to a project review. I quickly encountered a memory allocation issue and had to temporarily reduce working memory from 256 to 128 bytes to keep the simulator working. This has since been solved by wrapping the memory and program lists in a bytearray function, which I believe reduces the memory required by a quarter. Becoming aware of the memory limit means that, although there is probably room for some extra code, a full implementation of the instruction set is not realistic.
+<p>
+I am considering an option to read ASCII codes and generate text messages. As an 8-bit computer simulator the project can be considered up and running.
+<p>
+<p>
+<div class='dateTitle'>Monday 1 June 2020. Halt</div>
+<p>
+RTFM. I have been using op code 0x0 NOP to stop the program running but on reading the Altair manual more carefully I find that NOP is used to insert programming spaces to allow modification of the code.  I have therefor implemented 0x76 HLT as op code to halt program execution and 0x0 NOP now increases the program counter by 1: I will need to add some failsafe for pc > 256 or just allow index out of range error to crash the simulator.
+<p>
+I have also been reading the <a href='https://altairclone.com/downloads/manuals/8080%20Programmers%20Manual.pdf'>Intel 8080 manual</a> and added some bitwise operators ANA_B, ORA_B, XRA_B and XRA_A (useful for clearing the Accumulator). I instantly encountered memory allocation problems again. The quickest solution is to reduce the memory array from 256 to 128 but I prefer to keep the memory addressing in line with the index range allowed by the data entry. After experimenting with reducing variable name length, removing comments and white space, changing and trying the Minify option in Mu, I was able to gain back the necessary memory by changing all <b>elif</b> statements to <b>if</b> in my op code loop.  
+<p>
+That fix seemed fine until I realised that the program was missing steps because the program counter had been updated and was liable to be caught by the next <b>if memory[pc]</b> instruction.  Solved by using a dummy <b>if memory[rpc]</b> and updating <b>rpc = pc</b> each loop.
+<p>
+<hr>
+<p>
+Download <a href='altair.hex'>hex file</a> for Altair 8080 emulator. Just drag and drop the saved file into your micro:bit.
+<p>
+<p>
+<div class='dateTitle'>Monday 29 June 2020. Raspberry Pi first run</div>
+<p>
+It wasn't long before I wanted to try and replicate the Altair simulator on a Raspberry Pi. To try and keep the wiring to a minimum, I chose to use neopixels for the display and an infrared controller as the inpu device. I already had experience of using neopixels with the Pi but an IR connecction proved even more of a challenge than I had encountered with the micro:bit. I eventually solved the problem after upgrading my Raspbian to Buster (it may have just been the new install that did the trick), ignoring the promise of LIRC and relying on a <a href='https://fishandwhistle.net/post/2016/raspberry-pi-pure-python-infrared-remote-control/'>pure Python solution</a> by Dewey Dunnington. I looked at  <a href='https://github.com/owainm713/IR-Remote-Receiver-Python-Module'>   another Python solution </a> that implements an event callback module, but I didn't find the results quite as reliable.
+<p>
+<img src="images/rpiAltair2.jpg">
+<p>
+The project was able to utilise a lot of the microPython code from the micro:bit project. The routine to interpret the opcodes is almost identical and could now be extended using the extra memory available on the Pi.
+<p>
+<img src="images/octal.png"> <img src="images/decrement.png">
+<p>
+I initially used the IR controller number keys to toggle the corresponding data bit but decided to implement an octal base as demonstrated in the original manual and evident in the facia layout in the image at the top of the page. An octal sensibility is also evident in the structuring of machine code instructions.
+<p>
+ <table border =1, cellpadding=2, height = 380>
+  <tr>
+    <td>FFA25D<br>Exit</td>
+    <td></td> 
+    <td>FFE21D<br>Menu</td> 
+ </tr>
+  <tr>
+    <td>FF22DD<br>Load</td>
+    <td>FF02FD<br>Store</td> 
+    <td>FFC23D<br>Save</td>
+  </tr>
+<tr>
+    <td>FFE01F<br>Back</td>
+    <td>FFA857<br>Run</td> 
+    <td>FF906F<br>Forward</td>
+  </tr>
+<tr>
+    <td>FF6897<br>0</td>
+    <td>FF9867<br>Goto</td> 
+    <td>FFB04F<br>Clear</td>
+  </tr>
+<tr>
+    <td>FF30CF<br>1</td>
+    <td>FF18E7<br>2</td> 
+    <td>FF7A85<br>3</td>
+  </tr>
+<tr>
+    <td>FF10EF<br>4</td>
+    <td>FF38C7<br>5</td> 
+    <td>FF5AA5<br>6</td>
+  </tr>
+<tr>
+    <td>FF42BD<br>7</td>
+    <td>FF4AB5<br></td> 
+    <td>FF52AD<br>Trace</td>
+  </tr>
+</table>
+<p>
+IR controller layout.  
+<p>
+<div class='dateTitle'>Saturday 4 July 2020. ESP8266 SSD1306</div>
+<p>
+And then I tried the <a href='https://github.com/pdbperks/ESP_altair'>simulator on an ESP8266</a> with an ssd1306 OLED running micropython and some helpful <a href='https://github.com/peterhinch/micropython_ir'>IR code by Peter Hinch.</a>
+<p>
+<img src="images/octal8bit.jpg">
+<p>
+The IR routine collects different codes to the previous libraries but is responsive on the ESP8266. I was encountering a problem saving code files until I realised that I would have to suspend the IR callback routine while writing to file. Adjusting the default data pin for the IR read has enabled me to neatly connect all the hardware using a row of pin jumpers. 
+<p>
+I think this is my favourite fabrication so far.
+<p>
+ <table border =1, cellpadding=2, height = 380>
+  <tr>
+    <td>45<br>Exit</td>
+    <td>46</td> 
+    <td>47<br>Menu</td> 
+ </tr>
+  <tr>
+    <td>44<br>Test</td>
+    <td>40<br>Store</td> 
+    <td>43<br>Trace</td>
+  </tr>
+<tr>
+    <td>07<br>Back</td>
+    <td>15<br>Run</td> 
+    <td>09<br>Forward</td>
+  </tr>
+<tr>
+    <td>16<br>0</td>
+    <td>19<br>Goto</td> 
+    <td>0D<br>Clear</td>
+  </tr>
+<tr>
+    <td>0C<br>1</td>
+    <td>18<br>2</td> 
+    <td>5E<br>3</td>
+  </tr>
+<tr>
+    <td>08<br>4</td>
+    <td>1C<br>5</td> 
+    <td>5A<br>6</td>
+  </tr>
+<tr>
+    <td>42<br>7</td>
+    <td>52<br>Load</td> 
+    <td>4A<br>Save</td>
+  </tr>
+</table>
+<p>
+IR controller layout.
+<p>
+<div class='dateTitle'>Monday 13 July 2020. Pythonista</div>
+<p>
+So I wondered how it would work on an iPhone running Pythonista.
+<p>
+<img src="images/pythonista.jpg">
+<p>
+Next, to port it back to the Rasberry Pi with a GUI using TKinter. Having started on the micro:bit with microPython, it has been relatively trivial to port to these different platforms and configurations.
+<p>
+<A NAME="end"></A>
+
+
+</center>
+
+</body>
