@@ -1,12 +1,223 @@
-<html>
-<head>
-<title>Amphibian Sun</title>
-</head>
-<body  bgcolor="#000000" text="#666666" LINK="#9999a6" ALINK="#808080" VLINK="#666666" >
-  <h2>Welcome to Earth</h2>
+<!DOCTYPE html>
+<HTML>
+<HEAD>
+<TITLE>Real Perks DATA</TITLE>
+<TITLE>Real Perks DATA</TITLE>
+<META NAME="description" CONTENT="Objects to poetry.">
+<META NAME="owner" CONTENT="david@dperks.co.uk">
+<META NAME="author" CONTENT="David Perks">
+<META NAME="keywords" CONTENT="pic Art Surrealism Mail Perks Flower
+Computer Chip Photo garden" >
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="shortcut icon" href="favicon.ico" >
+
+<link rel="stylesheet" type="text/css" href="css/screen.css" media="screen"/>
+
+
+
+</HEAD>
+
+
+<BODY>
+
+
+
+<header>
+<IMG id='perksHead' align=right BORDER=0 style="padding:3px;" ALT="" SRC="head2.jpg">
+david perks
+</header>
+
+
+<div id="accordian" >
+
+
+<div class='menuHead'>objects</div>
+<div class='menuItems' style="display:none">
 <p>
-<a href = "/vox/index.htm">Clangermin</a>
+<a href = "blind.html">  Blind Man's Buff</a>
 <p>
-<a href = "sun.htm">Frog poem</a>
+<a href = "keybuk.html">  Fraction of...</a>
+<p>
+</div>
+
+<div class='menuHead'>projects</div>
+<div class='menuItems' style="display:none">
+<p>
+<a href="altair/">Altair 8080 emulator for BBC micro:bit</a>
+<p>
+
+<p>
+<a href="breadboards/">MakerMonday #breadandbreadboards</a>
+<p>
+<a href="infrared/">Infrared Control</a>
+<p>
+<a href="kinect/">Kinect to GIMP</a>
+<p>
+<a href="uPython/">uPython REPL</a>
+<p>
+<a href="bashRPi/">Bash the RPi</a>
+<p>
+<a href = "keyboardHack/">USB keyboard hacking.</a>
+<p>
+<a href = "arduino_guitar/">GH controller for pd VJ.</a>
+<p>
+<a href = "arduino_laser/">Laser graffiti.</a>
+<p>
+<a href = "arduino_RFID/">RFID scanner.</a>
+<p>
+<a href = "arduino_SD/">SD card reader for Arduino word processor.</a>
+<p>
+<a href = "mousecam/"> Making a mouse scanner</a>
+</div>
+
+
+<div class='menuHead'>film</div>
+<div class='menuItems' style="display:none">
+<p>
+<a href = "https://youtu.be/cPqJrlWgZ94">standard 8 loop</a> Scratch test. 
+<p>
+<a href = "https://youtu.be/kbtrK5IafGI">Short man in a suit</a>
+<p>
+<a href = "https://youtu.be/-C2XxSOrZewI">re Cycling for Poets</a> 
+
+
+<p>
+<a href = "https://youtu.be/d-yN6usast0">
+Morning Mist</a> Feedback tests. Music Les Hewitt. 
+<p>
+
+<a href = "https://youtu.be/T5EKtSB4Bfc">Auto mobile.</a> Hand pulled 8mm film.
+
+
+</div><div class='menuHead'>
+apps</div>
+<div class='menuItems' style="display:none">
+<p>
+<a href = "/f2fx">RGB image editor</a>
+<p>
+<a href = "/anim/index.php">web2animation</a>
+<p>
+<a href = "/semaphore/">semaphore app</a>
+</div>
+
+
+<div class='menuHead'>poetry</div>
+<div class='menuItems' style="display:none">
+<p>
+<a href = "sun.htm" target="_self">Amphibian Sun.</a>
+<p>
+<a href = "perfume.php" target="_self">The Perfumed Allotment.</a>
+</div>
+
+
+<div class='menuHead'>
+about</div>
+<div class='menuItems' style="display:none">
+<p>
+I am a retired art teacher who enjoys playing with computers.
+<p id='email'>
+</p>
+<script>
+var user = 'david';
+    domain = 'dperks.co.uk';
+    element = document.getElementById('email');
+    combine = user + '@' + domain;
+    element.innerHTML = 'Email: <a href="mailto:' + combine + '">' + combine + '</a>';
+    //OR
+    //'<a href="mailto:' + user + '@' + domain + '">Email</a>'  
+</script>
+<p>
+
+<!--
+<a class="twitter-timeline" href="https://twitter.com/pdbperks">Tweets</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+-->
+
+<script>
+
+//print last modified date
+var datestamp = new Date(document.lastModified);
+document.write('<br>Last modified '+datestamp.getDate()+'.'+(datestamp.getMonth()+1)+'.'+datestamp.getFullYear());
+
+
+
+</script>
+
+
+</div>
+
+
+</div>
+
+
+
+<footer>
+
+</footer>
+
+
+
+
+
+<script>
+
+//DOM READY STUFF ---------------
+//set up variables and DOM pointers;---------------------
+_header=document.getElementsByTagName("header");
+_body=document.getElementsByTagName("body");
+_menuHead=document.getElementsByClassName("menuHead");
+_accordian=document.getElementById("accordian");
+_perksHead=document.getElementById("perksHead");
+headerToggle=true;
+
+_header[0].addEventListener('click', function() {
+//_accordian.style.display = (_accordian.style.display != 'none') ? 'none' : '' ;
+for (var i = 0; i < _menuHead.length; i++) {
+_menuHead[i].nextElementSibling.style.display = headerToggle?"block":"none";}
+headerToggle=!headerToggle;
+});
+
+for (var i = 0; i < _menuHead.length; i++) {
+_menuHead[i].addEventListener('click', menuHeadFunction, false);
+}
+
+
+//doOnOrientationChange();
+
+
+function menuHeadFunction() {
+this.nextElementSibling.style.display == "block" ? this.nextElementSibling.style.display = "none" : 
+this.nextElementSibling.style.display = "block"; 
+};
+
+/*
+//handle orientation change for mobiles;------------------
+    function doOnOrientationChange()
+  {
+_accordian.style.display = 'none';
+if(window.orientation==0){_body[0].style.fontSize = "40px";
+_header[0].style.height = 200;
+}
+else{_body[0].style.fontSize = "20px";
+_header[0].style.height = 100;
+}
+
+
+_perksHead.style.height=_header[0].style.height;
+//alert("rotation ");
+//_accordian.style.display = (_accordian.style.display != 'none') ? 'none' : '' ;
+//_body.style.display = "";
+//_accordian.style.display = '';
+setTimeout(function(){
+_accordian.style.display = '';},20);
+
+  }//end of orientation
+
+
+window.addEventListener('orientationchange', doOnOrientationChange);
+
+*/
+
+</script>
+</body>
 
 </html>
