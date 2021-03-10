@@ -1,0 +1,193 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta name='viewport' content='width=device-width, initial-scale=1, user-scalable=no' /> 
+<style>
+	body {
+    width: 100vw;
+    height: 100vh;
+    transform-origin: 0 0;
+	margin: 0px;
+	padding: 0px;
+	display: block;
+	}
+	
+
+#container {
+	/*display: block;*/
+	  position: relative;
+/*background: red;
+outline: 1px black;*/
+}
+
+	canvas {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	outline: none;
+	-webkit-tap-highlight-color: rgba(255, 255, 255, 0); /* mobile webkit */
+width: 100%;
+height: 100%;
+position: relative;
+/*position: absolute; left: 0; right: 0; top: 0; bottom: 0;*/
+} 
+</style>
+
+</head>
+<body>
+	<center>
+  <h1>CLANGERMIN</h1>
+  
+<p id="tilt">Tilt:</p>
+<button id='playaudio' onclick='loadAudio()'>Start</button>
+<p>
+<!--button id='stopaudio' onclick='stopAudio()'>Stop</button-->
+
+	</center>
+<script>
+		
+//var canvas = document.getElementById('myCanvas');
+//var ctx = canvas.getContext('2d');
+//var meter = document.getElementById('container');
+//var img=new Image();
+//img.src='alohaHub.png';
+//var shout = new Image();
+//shout.src='shout.png';
+//var uke = new Image();
+//uke.src = "ukegray.png";
+var animUke=0;
+var firstrun = 0;
+var buttonFlash = 0;
+var buttonRef;
+var shoutOff = 0;
+var helpOn = 1;
+
+var mousePos;
+var lastMousePosX =135;
+var timerRef
+var tiltOn = 1; //tilt active
+var tiltOff = 1; //tilt not supported - use screen touch option
+var shoutY = 250;  // 30
+var shoutA = 0;
+var shoutRef0;
+var shoutRef1;
+var shoutRef2;
+var shoutRef3;
+var shoutRef4;
+var helpRef;
+var myHeight = window.innerHeight;
+var myWidth = window.innerWidth;
+var portrait = (window.innerHeight > window.innerWidth);
+var orient = (portrait==true);
+var context;
+var oscillator;
+var voice='sine';
+var octave = 0;
+var gain;
+ var real = new Float32Array([0,1,1,1,1,0,1,1,1]);
+ var imag = new Float32Array(real.length);
+
+function loadAudio(){
+if (shoutOff==0){
+synth(440);
+}
+	shoutOff=0;
+	
+	window.removeEventListener("deviceorientation", deviceOrientationListener);
+	window.addEventListener("deviceorientation", deviceOrientationListener);
+	
+}
+
+function stopAudio(){
+	
+	shoutOff=1;
+	//oscillator.stop(0);
+}
+
+/*Give the Audio element a stop function
+HTMLAudioElement.prototype.stop = function()
+{
+	this.pause();
+	this.currentTime = 0.0;
+}
+*/
+
+var tiltmeter = document.getElementById('tilt');
+// #####################################
+function deviceOrientationListener(event){
+
+
+alpha = Math.round(event.alpha);
+beta = Math.round(event.beta);
+gamma = Math.round(event.gamma/10);
+voice='sine';
+if (gamma<-2)voice = 'sawtooth';
+if (gamma>2)voice = 'square';
+
+if (beta>90)octave = 0;
+if (beta<-70)octave = -1;
+
+tiltmeter.innerHTML = "Tilt: " + beta/10 + " North: " + alpha + " Roll: " + gamma;
+oscillator.frequency.setValueAtTime(220+beta*4, 0);
+
+
+if ((shoutOff==0) && (alpha<40)){
+shoutOff=1;
+synth(440);
+} //endif !shoutOff
+if (alpha>40){
+	shoutOff=0;
+//	oscillator.stop(0);
+}
+
+} //function end
+/*
+C5 523.25
+D5 587.33
+E5 659.25
+G5 783.99
+A5 80.00
+C6 1046.50
+*/
+
+
+if(window.DeviceOrientationEvent) {	
+	window.addEventListener("deviceorientation", deviceOrientationListener)
+	}
+else{
+alert("Sorry, browser doesn't support device orientation.")
+}
+var tiltmeter = document.getElementById('tilt');
+tiltmeter.innerHTML = "Tilt: "
+
+context = new (window.AudioContext || window.webkitAudioContext)();
+//oscillator.addEventListener('onended',function(){shoutOff = 0});
+// #############audio
+function synth(tone){
+oscillator = context.createOscillator();
+gain = context.createGain();
+var now = context.currentTime;
+oscillator.onended = function() {shoutOff = 0};
+oscillator.type = voice;//'sine';
+
+oscillator.frequency.value = tone*(Math.pow(2,octave));//440;
+oscillator.connect(gain);
+gain.connect(context.destination);
+
+gain.gain.setValueAtTime(0.001, now);
+gain.gain.exponentialRampToValueAtTime(1, now + 0.05);
+gain.gain.setValueAtTime(1, now + 0.9);
+gain.gain.exponentialRampToValueAtTime(0.001, now + 1);
+//oscillator.frequency.setValueAtTime(tone*(Math.pow(2,octave))*1.08, now + 1);
+oscillator.start(now);
+
+oscillator.stop(now + 1);
+}
+
+    </script>
+  </body>
+</html>      
+
