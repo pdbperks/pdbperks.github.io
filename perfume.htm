@@ -15,14 +15,15 @@ Computer Chip Photo garden Thatcher">
 //</form>
 
 function write_poem(){
-
+amphibian = "";
 for(x=0;x<16;x++){
 num = Math.round(Math.random()*  100);
 
 //amphibian = sun[num];/array.splice(index, 1)
-amphibian = sun.splice(num,1);  
-document.write( amphibian +"  ");}
-
+amphibian = amphibian + sun.splice(num,1)+"  ";  
+//document.write( amphibian +"  ");}
+  
+document.getElementById("content").innerHTML = amphibian;
 }
 
 function write_poem2(){
@@ -44,7 +45,10 @@ sun = new Array("The perfumed dune. ","The allotment of Eden","Small fish like y
 
 
 <a href = "index.htm"><IMG align=right WIDTH=32 HEIGHT=38 BORDER=0 ALT="Perks" SRC="head.gif" onMouseOver="self.status='Return to main page' return true "onMouseOut="self.status=' ' return true"></A>
-
+<h1>
+  The Perfumed Allotment
+  </h1> 
+  <div id="content"></div>
 <script language="JavaScript">
 write_poem();
 </script>
