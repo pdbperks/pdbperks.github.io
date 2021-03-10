@@ -19,7 +19,8 @@ function write_poem(){
 for(x=0;x<16;x++){
 num = Math.round(Math.random()*  100);
 
-amphibian = sun[num];
+//amphibian = sun[num];/array.splice(index, 1)
+amphibian = sun.splice(num,1);  
 document.write( amphibian +"  ");}
 
 }
@@ -42,7 +43,7 @@ sun = new Array("The perfumed dune. ","The allotment of Eden","Small fish like y
 <BODY BGCOLOR="#000000"text="#666666"LINK="#9999a6"ALINK="#808080"VLINK="#666666">
 
 
-<a href = "index.php"><IMG align=right WIDTH=32 HEIGHT=38 BORDER=0 ALT="Perks" SRC="head.gif" onMouseOver="self.status='Return to main page' return true "onMouseOut="self.status=' ' return true"></A>
+<a href = "index.htm"><IMG align=right WIDTH=32 HEIGHT=38 BORDER=0 ALT="Perks" SRC="head.gif" onMouseOver="self.status='Return to main page' return true "onMouseOut="self.status=' ' return true"></A>
 
 <script language="JavaScript">
 write_poem();
