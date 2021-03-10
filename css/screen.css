@@ -1,0 +1,97 @@
+/*CSS file for mobile*/
+
+body {
+  font-family:arial;
+//  background:#aaaaaa;
+background:#ffffff;
+   max-width:100%;
+  padding-top: 0%;
+  font-size: 20;
+}
+
+
+p {
+  font-size:100%;
+  color:darkslategray;
+}
+
+header {
+  font-size:12vw;
+  color:pink;
+
+  padding-left:40px;
+padding-bottom: 5px;
+  margin-right:0px; 
+  text-shadow:8px 2px 2px #444;
+background-image:url('header.jpg');
+
+background-size: auto 22vw;
+ background-position: 0vw -4vw;
+
+}
+
+#perksHead{
+height:14vw;
+//object-fit:contain;
+}
+
+
+.menuHead {
+  font-size:180%;
+  color:pink;
+ // background-color:#bbbbbb;
+ padding-left:40px;
+  margin: 2px;
+border: 2px solid #ccc ;
+  text-shadow:2px 2px 2px #444;
+  margin-right:0px;
+
+}
+
+.menuItems{
+ padding-left:10px;
+}
+
+
+/* modify all paragraphs  background-color:#111111*/ 
+li { 
+  text-align:justify;
+  margin-left:200px; 
+  margin-right:40px;
+ }
+
+.wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+a:link {
+  color:#333386;
+   /* background-color:#333333;*/
+     text-shadow:1px 1px 1px pink;
+  /*text-decoration:none;*/
+}
+
+a:hover {
+  color:#7777a6;
+content: attr(href);
+     text-shadow:1px 1px 1px #aaaaaa;  
+    /*  background-color:#333333;*/
+  /*text-decoration:none;*/
+}
+
+a:visited {
+  color:#555586;
+   /* background-color:#333333;*/
+     text-shadow:1px 1px 1px pink;
+  /*text-decoration:none;*/
+}
+
+footer {
+  font-size:60%;
+  color:#333333;;
+    position: fixed;
+    bottom: 0px;
+
+   
+}
