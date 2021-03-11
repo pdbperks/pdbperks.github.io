@@ -1,0 +1,278 @@
+<?php 
+
+header("Cache-Control: no-cache");
+
+session_start();
+
+
+
+//$used= $_SESSION['used'];//$_GET['used'];
+
+//if ($routine==NULL) $routine='splash';
+
+//$site="http://".$_SERVER['SERVER_ADDR'];
+
+$site="http://".$_SERVER['SERVER_NAME'];
+
+
+
+$self = $_SERVER['PHP_SELF'];
+
+?>
+
+
+
+<HTML>
+
+<HEAD>
+
+<TITLE>Real Perks</TITLE>
+
+<META NAME="description"CONTENT="objects to poetry.">
+
+<META NAME="owner"CONTENT="david@dperks.co.uk">
+
+<META NAME="author"CONTENT="pdbperks">
+
+<META NAME="keywords"CONTENT="pic art maker">
+
+<style>
+
+@import url("../css/blog.css");
+
+</style>
+
+
+
+
+
+</HEAD>
+
+
+
+<BODY BGCOLOR="#000000"text="#666666"LINK="#9999a6"ALINK="#808080"VLINK="#666666">
+
+
+
+
+
+<a href = "../index.php"><IMG id="headIcon"
+
+align=right WIDTH=32 HEIGHT=38 BORDER=0
+
+ALT="Perks" SRC="../head.gif"></A>
+
+
+
+
+
+<h2>Keyboard Hacks.</h2><p align=left>
+
+
+
+<?php
+
+
+
+echo <<<END
+
+
+
+
+
+<p>
+
+<div class='dateTitle'>Monday 15 May 2017. USB keyboards.</div>
+
+<p>
+
+
+
+If you want to get into hardware hacking then these easily available input devices are a great place to start. People will give them to you for free. They can be connected to almost any computer.
+
+<p>
+
+The keyboard controller handles a large number of switches by using a matrix wiring layout. The keyboard contains two plastic sheets with conductive tracings: 8 lines on the top sheet and 18+ on the bottom sheet. Wires can be soldered to the controller board or simply contact connected by using the pressure bar. 
+
+<p>
+
+<img src="images/kbdmatrix.jpg"> 
+
+<p>
+
+In this example a matrix of 2 by 4 wires is used to connect 8 switches on an Atari gaming dock.  The switches are registered as keycodes by the computer via USB. They can be used to control animation movement in Scratch or other programming languages.  
+
+<p>
+
+<img src="images/dock_kbdchip.jpg">
+
+<p>
+
+The time-consuming task is working out which wires connect to specific keys: I hope you are good at tracing mazes!  There are no standard layouts. A contact tester is useful for checking the connections but the resistance may be higher than you expect. 
+
+<p>
+
+<img src="images/dock_inside.jpg">
+
+
+
+<p>
+
+<a href="http://www.instructables.com/id/Hacking-a-USB-Keyboard/">This is where I started my research.</a> As usual, the comments and supporting links are as useful as the main article.
+
+<p>
+
+<div class='dateTitle'>Tuesday 16 May 2017. Custom buttons.</div>
+
+<p>
+
+Anything with push buttons can be modified to link to the keyboard controller.
+
+<p>
+
+<img src="images/gameboard.jpg">
+
+<p>
+
+
+
+This is the inside view of a hand-held card game. You can see that buttons here are also arranged in a matrix: this means that 10 buttons can be controlled by only 7 wires. I sketched a grid to work out the matrix so now I just need to decide which keyboard lines to connect. I plan to use a wireless keyboard controller to complete this hack if I can make enough space in the case.
+
+<p>
+
+<img src="images/gamegrid.jpg">
+
+<p>
+
+The buttons in this unit are discrete from the circuits but in some instances you may need to cut circuit traces for the buttons to register correctly. I had to cut traces in the Atari dock example above.
+
+<p>
+
+<div class='dateTitle'>Tuesday 16 May 2017. Using the leds for output.</div>
+
+<p>
+
+Wouldn't it be great if we could use the keyboard for output as well as making custom input devices? 
+
+<p>
+
+Following some research:
+
+<br>
+
+<a href="http://hackaday.com/2015/09/18/quick-keyboard-hack-to-control-heavy-loads/">Quick keyboard hack to control heavy loads</a>
+
+<br>
+
+I can now switch on my compact camera via the Scroll Lock led wired to an opto-isolator. Not surprisingly, output requires operating system specific coding so I concentrated on using the linux command <code>xset</code> for my first tests. 
+
+<p> 
+
+<img src="images/camera_on.png">
+
+<p>
+
+Just having control of the keyboard leds is fun. Scroll Lock is usually available but it may be necessary to <a href="
+
+https://unix.stackexchange.com/questions/179286/change-the-status-of-the-keyboard-leds-from-within-an-x-session-without-root-a">make all leds </a> accessible to xset using the following steps.
+
+<pre>
+
+xkbcomp &#36;DISPLAY myconf.xkb
+
+</pre>
+
+<p>
+
+Edit myconf.xkb to allowExplicit in the indicator blocks. Save file and load &#36;DISPLAY with edited details.  You can just reload from the myconf.xkb file in future sessions.
+
+<pre>
+
+xkbcomp myconf.xkb &#36;DISPLAY
+
+</pre><p>
+
+If working in a shell give access to the xsytem with
+
+<code>
+
+set DISPLAY=:0
+
+</code> You may need to <code>startx</code> first if running headless.
+
+<br>The leds are numbered:<br>
+
+Caps Lock = 1<br>
+
+Num Lock = 2<br>
+
+Scroll Lock = 3<br>
+
+To send a pulse to trigger the camera power switch I use:
+
+<pre>
+
+xset led 3;sleep 1;xset -led 3
+
+</pre>
+
+<p>
+
+Works from ubuntu on VirtualBox aswell. 
+
+<p>
+
+<div class='dateTitle'>Wednesday 8 May 2019. Tidying up.</div>
+
+<p>
+In preparation for a talk about my work at Stafford RaspberryPi Jam, 
+I have reconfigured the wireless keyboard controller to provide navigation keys suitable for controlling a powerpoint presentation.
+I have also added a socket to test input switches such as a reed switch or optical sensor: this connection returns the tilde (~) keystroke. 
+The controller board is fitted inside the handheld unit, just. 
+
+ 
+
+<p> 
+
+<img src="images/casinoAce.jpg">
+
+<p>
+I have provided a socket in the keyboard body to help neaten the output connections.
+<br>
+I have also discovered some Python script to control the key locks on Win10 as well as Linux. 
+
+
+<pre>
+
+import keyboard
+import time
+
+keyboard.press_and_release('num lock')
+time.sleep(1)
+keyboard.press_and_release('num lock')
+
+</pre>
+
+<A NAME="end"></A>
+
+END
+
+?>
+
+
+
+
+
+<hr>
+
+<p>
+
+
+
+Thanks to 
+
+<a href="https://www.staffordshire.gov.uk/leisure/librariesnew/branchlibraries/StaffordLibrary/StaffordLibrary.aspx">Stafford Library</a> for support. 
+
+</center>
+
+</body>
