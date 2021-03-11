@@ -1,15 +1,3 @@
-<?php 
-header("Cache-Control: no-cache");
-session_start();
-
-//$used= $_SESSION['used'];//$_GET['used'];
-//if ($routine==NULL) $routine='splash';
-//$site="http://".$_SERVER['SERVER_ADDR'];
-$site="http://".$_SERVER['SERVER_NAME'];
-
-$self = $_SERVER['PHP_SELF'];
-?>
-
 <HTML>
 <HEAD>
 <TITLE>Real Perks</TITLE>
@@ -32,11 +20,6 @@ ALT="Perks" SRC="../head.gif"></A>
 
 
 <h2>Kinect to GIMP.</h2><p align=left>
-
-<?php
-
-echo <<<END
-
 <p>
 <div class='dateTitle'>Friday 29 June 2018. Introduction.</div>
 <p>
@@ -53,7 +36,7 @@ I think I need to work on the default settings!
 <p>
 <div class='dateTitle'>Friday 29 June 2018. Kinect.</div>
 <p>
-I bought an XBOX360 Kinect sensor from a carboot sale for £2.50 and was interested to see how I could access it using my new knowledge of Python scripting.  I had previously hacked the Kinect sensor using OpenKinect and Flex2 but saw greater potential if I could access it with Python.  Since I am mostly working on Win10 these days, I also wanted to use the official <a href = 'https://www.microsoft.com/en-gb/download/details.aspx?id=40278'>Microsoft Kinect API</a>. 
+I bought an XBOX360 Kinect sensor from a carboot sale for Â£2.50 and was interested to see how I could access it using my new knowledge of Python scripting.  I had previously hacked the Kinect sensor using OpenKinect and Flex2 but saw greater potential if I could access it with Python.  Since I am mostly working on Win10 these days, I also wanted to use the official <a href = 'https://www.microsoft.com/en-gb/download/details.aspx?id=40278'>Microsoft Kinect API</a>. 
 <p>
 <img src='images/kinect.jpg'>
 <p>
@@ -109,9 +92,6 @@ but the colour palette works well and improves the painting experience.  The pal
 
 
 <A NAME="end"></A>
-END
-?>
-
 
 <hr>
 <p>
