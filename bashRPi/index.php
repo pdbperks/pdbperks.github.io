@@ -1,0 +1,324 @@
+<?php 
+
+header("Cache-Control: no-cache");
+
+session_start();
+
+
+
+//$used= $_SESSION['used'];//$_GET['used'];
+
+//if ($routine==NULL) $routine='splash';
+
+//$site="http://".$_SERVER['SERVER_ADDR'];
+
+$site="http://".$_SERVER['SERVER_NAME'];
+
+
+
+$self = $_SERVER['PHP_SELF'];
+
+?>
+
+
+
+<HTML>
+
+<HEAD>
+
+<TITLE>Real Perks</TITLE>
+
+<META NAME="description"CONTENT="objects to poetry.">
+
+<META NAME="owner"CONTENT="david@dperks.co.uk">
+
+<META NAME="author"CONTENT="pdbperks">
+
+<META NAME="keywords"CONTENT="pic art maker">
+
+<style>
+
+@import url("../css/blog.css");
+
+</style>
+
+
+
+</HEAD>
+
+
+
+<BODY BGCOLOR="#000000"text="#666666"LINK="#9999a6"ALINK="#808080"VLINK="#666666">
+
+
+
+
+
+<a href = "../index.php"><IMG id="headIcon"
+
+align=right WIDTH=32 HEIGHT=38 BORDER=0
+
+ALT="Perks" SRC="../head.gif"></A>
+
+
+
+
+
+<h2>Bash the Raspberry Pi.</h2><p align=left>
+
+
+
+<?php
+
+
+
+echo <<<END
+
+
+
+<p>
+
+<div class='dateTitle'>Saturday 6 May 2017. Introduction. Revised 23 June 2020</div>
+<p>
+<img src='images/palmS.jpg'>
+<p>
+<p>
+
+ I often log into the RPi in headless mode using
+
+<code>
+
+ssh -Y pi@raspberrypi.local
+
+</code>
+
+and, although it is easy to get a graphic interface using vnc or an Xwin, I make a lot of use of text commands in bash.
+
+<p>
+
+One of my first experiments with the Raspberry Pi was to establish a serial connection with a Palm Personal Digital Assistant and use its terminal program to access the Pi's login shell at boot up. The PDA provides a screen to display text and a virtual keyboard or graffiti pad to enter commands. The problem is that it lacks cursor keys, needed to recall the previous command, and I didn't like having to retype text on its fiddly interface.
+<p>
+
+
+
+This page is a personal guide to resolving this problem.
+
+<P>
+
+<b>Navigating in bash.</b>
+
+<p>
+
+Having access to a command history is one of the great features of the shell. You can use the cursor up key to recall the last command, or repeat this until you find the command you want to execute or modify; for most commands this is much quicker than retyping the text. I discovered that shell history can also be navigated using Control key combinations: Ctrl + p will display the previous line. Fortunately, the Palm terminal program features a control icon so I was quickly zipping about my command history. Control codes are useful to learn even if you have cursor navigation on your keyboard. I have learned some new favourites while researching for this blog.
+<pre>
+Ctrl + p - display the last line in the history list.
+Ctrl + n - display the next line in the history list.
+Ctrl + a - go to the beginning of the line
+Ctrl + e - go to the end of the line
+Ctrl + k - cut from the cursor to the end of the line.
+Ctrl + u - cut from the cursor to the beginning of the line.
+Ctrl + y - paste content cut with Ctrl+U or Ctrl+K
+Ctrl + l - clear the screen and redraw the current line
+Ctrl = i - autocomplete. Ctrl + ii - list autocomplete choices. (cf Tab)
+</pre>
+
+<p>This github page has a good range of 
+
+<a href="https://gist.github.com/tuxfight3r/60051ac67c5f0445efee"> navigation tips</a> -
+
+<p>
+You may already use the <code>history</code> command to print a numbered list of previous commands and recall a command by using the <code>!</code> shortcut: <code>!1</code> for example, would repeat the <code>cd ~</code> command from the following list.
+<br>
+<pre>
+1 cd ~                #change directory to home
+2 ls                  #list directory
+3 cd *1306            #use * wildcard to change directory to Adafruit_Python_SSD1306
+4 cd ex*;ls           #use * wildcard to change directory to examples; and list contents
+5 python3 shapes.py   #run shapes example
+
+</pre>
+<p>
+
+Use <code>!!</code> to repeat the last line . So <code>sudo !!</code> would give you <code>sudo python3 shapes.py</code>
+<br>Use <code>!$</code> to repeat the last arguments. So less <code>!$</code> would give you <code>less shapes.py</code>
+
+<p>
+
+
+
+When you have a large history of commands you might find it useful to pipe the output into another command to filter your results.
+<pre>
+history | tail          #will give you the last ten entries.
+history | head          #will give you the first ten entries.
+history | grep string   #will give you only those entries that contain the provided string.
+</pre>
+<p>
+I find the last option so helpful that I use an alias to help search the history.
+<code>alias past='history|grep '</code>
+<p>
+Now however, with my new familiarity of Control codes, I am starting to use
+Ctrl + r - reverse search history
+This gives you an interactive search, providing results as you type. Press Ctrl + r again to show an earlier match. Press Ctrl + m (or Enter) to execute the result. Ctrl + j (or cursor right) to select for editing. Ctrl + g (or cursor down) to abandon the search.
+
+
+
+
+<p>
+Bash (Bourne Again SHell) is the default shell on Raspberry Pi Linux distributions and there are plenty of useful guides to using bash history on the internet. Alternatively, if you run the command
+<p>
+<code>bind -p</code>
+<p>
+it will list all the bash shortcuts; but I suggest that you filter it through grep to narrow the output down to the control codes! Then pipe it to less so that you can scroll through the results.
+<p>
+<code>bind -p | grep C | less</code>
+<p>
+
+
+
+
+
+
+Raspberrypi.org provides a simple guide to
+
+<a href='https://www.raspberrypi.org/documentation/linux/usage/commands.md'>Linux Commands</a>. Check their guide for an introduction.  Here is an example:
+
+<P>
+
+ls<br>
+
+The ls command lists the content of the current directory (or one that is specified). It can be used with the -l flag to display additional information (permissions, owner, group, size, date and timestamp of last edit) about each file and directory in a list format. The -a flag allows you to view files beginning with . (i.e. dotfiles).
+
+<pre>
+
+ls /	#list root directory
+
+ls ~	#list home directory
+
+ls ../	#list parent directory
+
+ls D*	#use the * wildcard to filter
+
+
+
+</pre>
+
+
+
+Use <code>alias</code> to provide a personal name for commands, command options or command lines. <code>alias past="history | grep "</code> Store these in your home directory using file .bash_aliases to preload your aliases each session.<br>
+
+Some aliases are defined in the script file .bashrc which is called everytime bash is started. This script file also checks for file .bash_aliases and runs it if it exists.
+
+<pre>
+
+alias l='ls -CF'
+
+alias la='ls -A'
+
+alias ll='ls -l'
+
+</pre>
+
+<p>
+
+You can find many guides to 
+
+<a href='https://www.digitalocean.com/community/tutorials/an-introduction-to-useful-bash-aliases-and-functions'>useful aliases</a>.  
+
+Use &#92; to escape an alias. eg: if <code>alias ls='ls --color=auto'</code> then <code>&#92;ls</code> will give the default command.  
+
+<p>
+To help me remember the most useful Control keys I have written a short alias command
+<code>alias ctrl='echo "Prev, Next, A<<, E>>, F>, B<, cUt<, Kut>, Yank, cLr, Recall MJG"</code>
+
+<p>
+
+You can create your own script files for bash to carry out complex computations.
+
+<pre>
+
+        #!/bin/bash
+
+        for i in $( ls ); do
+
+            echo item: $i
+
+        done
+
+</pre>
+
+<p>
+
+Call the script file using <code>bash scriptName.sh</code>
+
+<br>
+
+Here is a script file to control led <a href="tuxx2.sh">traffic lights</a> through the GPIO pins. It is built on the work of <a href="https://projects.drogon.net/raspberry-pi/gpio-examples/tux-crossing/">Gordon Henderson</a> and requires <a href="https://projects.drogon.net/raspberry-pi/wiringpi/download-and-install/">wiringPi</a>. 
+
+<p>
+
+<br>
+
+Functions can be created in script files (eg .bashrc) and can also be created and called from the command line.
+
+<pre>
+
+hello() { echo "Hello "$1;  echo;}
+
+hello world
+
+</pre>
+
+<P>
+
+
+<div class='dateTitle'>Monday 11 November 2019. Install screen. Updated 23 June 2020. Use tmux instead! </div>
+
+<p>
+Use <a href="https://linuxize.com/post/how-to-use-linux-screen/">screen</a> to run persistant windows from a single ssh connection.
+<p>
+sudo apt-get install screen
+<p>
+Just remember this one command: <a href="https://www.gnu.org/software/screen/manual/screen.html">Ctrl-a ?</a> to display a list of the available screen commands.
+<p>
+ After a updating Raspian to Buster I looked to reinstall screen but decided to see if there were any alternatives and discovered <a href ='https://www.hamvocke.com/blog/a-quick-and-easy-guide-to-tmux/'>tmux</a>, which I much prefer.
+<p>
+<img src='images/tmux.png'>
+
+
+
+
+
+
+<p>
+
+<div class='dateTitle'>Wednesday 24 June 2020. Bash push</div>
+<p>
+I've often wanted to store a directory location so that I could revisit it quickly: enter <code>dirs</code> with supporting commands <code>pushd</code> and <code>popd</code>. Use <code>pushd</code> as a replacement for <code>cd</code>, it will change directory but add the new listing to a directory stack. <code>dirs -v</code> will give a numerated list of the directory stack.  You can use <code>popd +N</code> to pull a listing or <code>cd ~N</code> to leave the stack unaltered; both methods would change to the directory listing.  Remember that <code>cd -</code> will toggle between the last two directories, whether or not you have built a directory stack.
+
+
+<A NAME="end"></A>
+
+END
+
+?>
+
+
+
+
+
+<hr>
+
+<p>
+
+
+
+Thanks to 
+
+
+
+<a href="https://staffordraspberryjam.co.uk/">Stafford Pi Jam
+</a> at <a href="https://www.staffordshire.gov.uk/Libraries/branchlibraries/StaffordLibrary/StaffordLibrary.aspx">Stafford Library</a> for support. 
+
+</center>
+
+</body>
