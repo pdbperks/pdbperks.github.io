@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset=utf-8>
+<meta name="viewport" content="width=980" />
+	<title>SeaGram</title>	
+
+<style>
+
+article, aside, figure, figcaption, footer, header, hgroup, menu, nav, section { display:block; }
+video, canvas {
+	border:2px solid #000;
+}
+#img_core {
+	display: none;
+}
+#scratch {
+	display: none;
+}
+#painting{
+      touch-action: none;
+	}
+
+#CRC { 
+	width:60px;
+	height: 50px;
+}
+#CR { 
+	width:80px; 
+	color:#0;
+}
+button {
+width:100px;
+}
+body {
+font-family: Sans-Serif;
+}
+a { 
+	color:#fff;
+	text-decoration:none;
+}
+
+    #dragme { 
+    position:  absolute;
+    left: 0;
+    top: 0; /* set these so Chrome doesn't return 'auto' from getComputedStyle */
+    width: 640px; 
+    //background: rgba(255,255,255,0.66); 
+   /* border: 2px  solid rgba(0,0,0,0.5); 
+    border-radius: 4px; padding: 8px;
+mask:url('animate-drag.svg#c1');
+-webkit-mask:url('animate-drag.svg');*/
+
+ 
+}
+
+
+div.crossfade { position: relative; } 
+div.crossfade, div.crossfade img { width: 640px;  } 
+div.crossfade img:nth-child(4) { position:absolute; left:0; top:0; transition: 
+3s opacity ease-out; } 
+//div.crossfade img:nth-child(4):hover { opacity: 0.2; } 
+//*/
+  #container {
+      width: 100%;
+      height: 400px;
+      background-color: #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border-radius: 7px;
+      touch-action: none;
+    }
+</style>
+
+
+</head>
+<body  onLoad="canvasFX()">
+	    <table>
+    <tr>
+    <td align="center">
+<div class="container"> 		 
+
+<img id="img_core" src="head2.jpg" width="640" height="480">
+
+<canvas id="scratch">
+Sorry, this browser needs to support the canvas feature.</canvas>
+
+<canvas id="painting">
+Sorry, this browser needs to support the canvas feature.</canvas>
+
+
+</div>
+ </td>
+</tr>
+
+<tr>    <td valign="top" align="center">
+
+<form ENCTYPE="multipart/form-data"  method=POST action="">
+<!--input type="hidden" name="id" value="001"-->
+
+ <input type="file" accept="image/*" id="cameraInput" name="file">
+ <p>
+
+<input STYLE="color: #0;" type="button" name="submitButton" value="-" id="CRC" onClick="smaller()">
+ <input STYLE="color: #0;" type="button" name="submitButton" value="+" id="CRC" onClick="larger()">
+<input STYLE="color: #0;" type="button" name="submitButton" value="Save" id="CRC" onClick="saveCanvas()">
+
+ </form>
+     
+    </td></tr>
+    </table>
+
+
+
+<script>
+	//######################################
+//capture="camera" 
+		var snapImg = new Image();
+		snapImg.src = "head.jpg";
+
+		var video = document.getElementById('img_core');
+		
+		var canvas = document.getElementById('painting');
+		var scratch = document.getElementById('scratch');		
+		//var img_hit = document.getElementById('img_hit');
+//img_hit.src=canvas.toDataURL();
+//video.src = 'ukePink.png';
+  // Attach the mousedown, mousemove and mouseup event listeners.
+  //canvas.addEventListener('mousedown', mouseDown, false);
+  //canvas.addEventListener('mousemove', mouseMove, false);
+  //canvas.addEventListener('mouseup',   mouseUp, false);
+
+		//var canvas2 = document.getElementById('copy_b');
+		//var canvas = document.querySelector('canvas');
+		// Get a handle on the 2d context of the canvas element
+		var context = canvas.getContext('2d');
+		var scratchCtx = scratch.getContext('2d');
+		
+		
+		//var context2 = canvas2.getContext('2d');
+		// Define some vars required later
+		var scratchX =0;
+		var scratchY =25;
+		var scratchZ = 3.4;
+		var w, h, ratio;
+		var px=0, py=0; ppx=80; ppy=80;
+		var drag=false;
+		
+		// Add a listener to wait for the 'loadedmetadata' state so the video's dimensions can be read
+		//video.addEventListener('loadedmetadata', function() {
+			// Calculate the ratio of the video's width to height
+			ratio = video.width / video.height;
+			// Define the required width as 100 pixels smaller than the actual video's width
+			w = video.width; //video.videoWidth/2;
+			// Calculate the height based on the video's width and the ratio
+			h = video.height;//parseInt(w / ratio, 10);
+			// Set the canvas width and height to the values just calculated
+			canvas.width = scratch.width = w;
+			canvas.height = scratch.height = h;
+		var px=0, py=0; ppx=w; ppy=h;
+
+var fx_mem=["r*1","g*1","b*1"];
+var orient;
+
+//var shout = new Image();
+//shout.src='shout4.png';
+var ukes = new Image();
+ukes.addEventListener('load', canvasFX, false);
+ukes.src = 'china.png';
+//ukes.onLoad = canvasFX();
+/*
+// Check support
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(success);
+}
+
+function success(position) {
+    console.log('Latitude: ' + position.coords.latitude);
+    console.log('Longitude: ' + position.coords.longitude);
+}
+*/
+
+
+function mem(){fx_mem=[document.RGB.cellR.value,document.RGB.cellG.value,document.RGB.cellB.value]};
+function memRecall(){document.RGB.cellR.value=fx_mem[0];document.RGB.cellG.value=fx_mem[1];document.RGB.cellB.value=fx_mem[2];canvasFX()};
+
+
+function larger(){scratchZ-=0.2;canvasFX()};
+function smaller(){scratchZ+=0.2;canvasFX()};
+function left(){scratchX-=1;canvasFX()};
+function right(){scratchX+=1;canvasFX()};
+function up(){scratchY-=1;canvasFX()};
+function down(){scratchY+=1;canvasFX()};
+function saveCanvas(){
+var image = canvas.toDataURL("image/jpg").replace("image/jpg", "image/octet-stream"); //Convert image to 'octet-stream' (Just a download, really)
+document.write('<img src="'+image+'"/>');
+//var img = new Image(); img.src = canvas.toDataURL(); document.body.appendChild(img);
+};
+
+function brighter(){document.RGB.cellR.value="r+50";document.RGB.cellG.value="g+50";document.RGB.cellB.value="b+50";canvasFX()};
+function darker(){document.RGB.cellR.value="r-50";document.RGB.cellG.value="g-50";document.RGB.cellB.value="b-50";canvasFX()};
+function contrastP(){document.RGB.cellR.value="r*2";document.RGB.cellG.value="g*2";document.RGB.cellB.value="b*2";canvasFX()};
+
+function contrastN(){document.RGB.cellR.value="127+(r-127)/2";document.RGB.cellG.value="127+(g-127)/2";document.RGB.cellB.value="127+(b-127)/2";canvasFX()};
+function grey(){document.RGB.cellR.value="(r+g+b)/3";document.RGB.cellG.value="(r+g+b)/3";document.RGB.cellB.value="(r+g+b)/3";canvasFX()};
+
+function sepia(){document.RGB.cellR.value="(r+g+b)/3+80";document.RGB.cellG.value="(r+g+b)/3+20";document.RGB.cellB.value="(r+g+b)/3-80";canvasFX()};
+function threshold(){document.RGB.cellR.value="255*(r>125)";document.RGB.cellG.value="255*(g>125)";document.RGB.cellB.value="255*(b>125)";canvasFX()};
+function stamp(){document.RGB.cellR.value="255*((r+g+b)/3>100)";document.RGB.cellG.value="255*((r+g+b)/3>100)";document.RGB.cellB.value="255*((r+g+b)/3>100)";canvasFX()};
+function negative(){document.RGB.cellR.value="255-r";document.RGB.cellG.value="255-g";document.RGB.cellB.value="255-b";canvasFX()};
+function chrome(){document.RGB.cellR.value="255*(g<100)";document.RGB.cellG.value="255-r";document.RGB.cellB.value="255-b";canvasFX()};
+function noise(){document.RGB.cellR.value="r+rnd(100,-50)";document.RGB.cellG.value="g+rnd(100,-50)";document.RGB.cellB.value="b+rnd(100,-50)";canvasFX()};
+var flipScaleX =1; 
+function flipX(){flipScaleX*=-1;canvas.style.transform
+="scaleX("+flipScaleX+")";canvas.style.webkitTransform
+="scaleX("+flipScaleX+")"; };
+function clean(){
+document.RGB.cellR.value="r*1";document.RGB.cellG.value="g*1";document.RGB.cellB.value="b*1";canvasFX()};
+
+
+			
+
+			
+
+				//}, false);
+function rnd(seed,offset){
+return Math.floor(Math.random()*seed)+offset;		
+			}
+
+
+
+	 
+// Make the video grey, and copy it
+		function canvasFX() {
+//alert("got here "+w+' '+h);
+var Rrgb = fx_mem[0];//document.RGB.cellR.value;
+var Grgb = fx_mem[1];//document.RGB.cellG.value;
+var Brgb = fx_mem[2];//document.RGB.cellB.value;
+//context.scale(0.2,0.2);			// Draw the video onto the backing canvas
+			//context.drawImage(video, 0, 0, w, h);//,  0,0,w/5,h/5 );
+		
+        
+			//context.drawImage(video, 0, 0, w, h);//,  0,0,w/5,h/5 );
+       		//context.drawImage(video, 25, 25, w/5, h/5);//,  0,0,w/5,h/5 );
+			scratchCtx.drawImage(video, 0, 0, w, h);
+/*
+			//alert('drawn');
+//context.scale(5,5);
+			//context.drawImage(context.canvas, 0, 0, w/5, h/5,  0,0,w*5,h*5);
+			// Grab the pixel data and work on that directly
+			//var pixelData = context.getImageData(px, py, ppx-px, ppy-py);
+			var pixelData = context.getImageData(px, py, ppx-px, ppy-py);
+			//(pixelData>0)?pixelData:pixelData=1;
+			// Loop through each pixel and convert it to grey scale
+			for (var i = 0; i < pixelData.data.length; i+=4 ) {
+				// Get the RGB values for this pixel
+				var r = pixelData.data[i];
+				var g = pixelData.data[i+1];
+			var b = pixelData.data[i+2];
+				// Get the weighted average colour across all 3 RGB values (based on standard Colour to GrayScale convertion methods)
+				//var averageColour = ((0.30 * r) + (0.59 * g) + (0.11 * b)) / 3;
+				//var averageColour = ((0.30 * r) + (0.59 * g) + b) / 3;
+				var averageColour = (r + g + b) / 3;//
+	pixelData.data[i] = eval(Rrgb);
+	pixelData.data[i+1] = eval(Grgb);//255*(g>105);//g*2;//(g-50)*10;// averageColour*4;
+	pixelData.data[i+2] = eval(Brgb);//255*(b>105);//b*2;//(b-50)*10;// averageColour*4;
+
+			//pixelData.data[i+3] = 0.2;
+			}
+			// Draw the data on the visible canvas (handling reverse drag)
+		//context.putImageData(pixelData, px, py, ppx-px, ppy-py);
+			context.putImageData(pixelData, px+((ppx-px)*(ppx<px)), py+((ppy-py)*(ppy<py)));
+*/
+
+	//scratchCtx.restore();		
+	context.drawImage(scratch,  scratchX, scratchY, canvas.width/scratchZ, canvas.height/scratchZ);
+			//context.globalAlpha = 0.5;
+	//scratchCtx.save();					
+	context.drawImage(ukes,0,0);
+
+		}
+		
+		
+function fileSelect(evt) {
+    if (window.File && window.FileReader && window.FileList && window.Blob) {
+        var files = evt.target.files;
+ 
+        var result = '';
+        var file;
+        for (var i = 0; file = files[i]; i++) {
+            // if the file is not an image, continue
+            if (!file.type.match('image.*')) {
+                continue;
+            }
+ 
+            reader = new FileReader();
+            reader.onload = (function (tFile) {
+                return function (evt) {
+    getOrientation(files[0], function(orientation) {
+        //alert('orientation: ' + orientation);
+        orient = orientation;
+        	scratchCtx.restore();
+        	canvas.width = scratch.width =  w;
+			canvas.height = scratch.height = h;
+			ppx=w; ppy=h;
+		 if (orientation==3) {        // 180° rotate right
+			scratchCtx.save();	
+		scratchCtx.transform(-1, 0, 0, -1, w, h);
+        };
+         if (orientation==6) {        // 90° rotate right
+		canvas.width = scratch.width = h;
+		canvas.height = scratch.height = w;
+		ppx=h; ppy=w;
+		scratchCtx.save();	
+		scratchCtx.transform(0, 1, -1, 0, h, 0);
+        };
+                 if (orientation==8) {        // 90° rotate left
+		canvas.width = scratch.width = h;
+		canvas.height = scratch.height =w;
+		ppx=h; ppy=w;
+		scratchCtx.save();	
+		scratchCtx.transform(0, -1, 1, 0, 0, w);
+        };
+    });
+	video.src=evt.target.result;
+	//video.onload = function(){canvasFX()};
+                };
+            }(file));
+            reader.readAsDataURL(file);
+        }
+    } else {
+        alert('The File APIs are not fully supported in this browser.');
+    }
+}
+ 
+document.getElementById('cameraInput').addEventListener('change', fileSelect, false);
+	video.addEventListener("load", canvasFX); 
+
+
+		//this function stackoverflow - Ali
+function getOrientation(file, callback) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+
+        var view = new DataView(e.target.result);
+        if (view.getUint16(0, false) != 0xFFD8)
+        {
+            return callback(-2);
+        }
+        var length = view.byteLength, offset = 2;
+        while (offset < length) 
+        {
+            if (view.getUint16(offset+2, false) <= 8) return callback(-1);
+            var marker = view.getUint16(offset, false);
+            offset += 2;
+            if (marker == 0xFFE1) 
+            {
+                if (view.getUint32(offset += 2, false) != 0x45786966) 
+                {
+                    return callback(-1);
+                }
+
+                var little = view.getUint16(offset += 6, false) == 0x4949;
+                offset += view.getUint32(offset + 4, little);
+                var tags = view.getUint16(offset, little);
+                offset += 2;
+                for (var i = 0; i < tags; i++)
+                {
+                    if (view.getUint16(offset + (i * 12), little) == 0x0112)
+                    {
+                        return callback(view.getUint16(offset + (i * 12) + 8, little));
+                    }
+                }
+            }
+            else if ((marker & 0xFF00) != 0xFF00)
+            {
+                break;
+            }
+            else
+            { 
+                offset += view.getUint16(offset, false);
+            }
+        }
+        return callback(-1);
+    };
+    reader.readAsArrayBuffer(file);
+}	
+
+    var dragItem = document.querySelector("#item");
+    var container = document.querySelector("#painting");
+
+    var active = false;
+    var currentX;
+    var currentY;
+    var initialX;
+    var initialY;
+    var xOffset = 0;
+    var yOffset = 0;
+
+
+    function dragStart(e) {
+      if (e.type === "touchstart") {
+        initialX = e.touches[0].clientX - xOffset;
+        initialY = e.touches[0].clientY - yOffset;
+      } else {
+        initialX = e.clientX - xOffset;
+        initialY = e.clientY - yOffset;
+      }
+
+      if (e.target === canvas) {
+        active = true;
+      }
+    }
+
+    function dragEnd(e) {
+      initialX = currentX;
+      initialY = currentY;
+
+      active = false;
+    }
+
+    function drag2(e) {
+      if (active) {
+      
+        e.preventDefault();
+      
+        if (e.type === "touchmove") {
+		  currentX = e.touches[0].clientX - initialX;
+          currentY = e.touches[0].clientY - initialY;
+        } else {
+          currentX = e.clientX - initialX;
+          currentY = e.clientY - initialY;
+        }
+//console.log("x = "+scratchX);
+scratchX+= (xOffset < currentX)-(xOffset > currentX);//currentX/100;
+scratchY+=(yOffset < currentY)-(yOffset > currentY);//currentY/100;
+canvasFX();
+        xOffset = currentX;
+        yOffset = currentY;
+
+
+        //setTranslate(currentX, currentY, dragItem);
+      }
+    }
+
+    function setTranslate(xPos, yPos, el) {
+      el.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0)";
+      
+    }
+    
+    canvas.addEventListener("touchstart", dragStart, false);
+    canvas.addEventListener("touchend", dragEnd, false);
+    canvas.addEventListener("touchmove", drag2, false);
+
+    canvas.addEventListener("mousedown", dragStart, false);
+    canvas.addEventListener("mouseup", dragEnd, false);
+    canvas.addEventListener("mousemove", drag2, false);
+
+
+	</script>
+</body>
+</html>
+
