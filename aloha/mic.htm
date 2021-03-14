@@ -1,0 +1,506 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta name='viewport' content='width=device-width, initial-scale=1, user-scalable=no' /> 
+<style>
+	body {
+    width: 100vw;
+    height: 100vh;
+    transform-origin: 0 0;
+	margin: 0px;
+	padding: 0px;
+	display: block;
+	}
+	
+	#container {
+	/*display: block;*/
+	  position: relative;
+/*background: red;
+outline: 1px black;*/
+}
+
+
+	
+	canvas {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	outline: none;
+	-webkit-tap-highlight-color: rgba(255, 255, 255, 0); /* mobile webkit */
+width: 100%;
+height: 100%;
+position: relative;
+/*position: absolute; left: 0; right: 0; top: 0; bottom: 0;*/
+} 
+	
+#request {
+  display: true;
+  position: fixed;
+  top: 0px;
+  z-index: 99;
+  font-size: 18px;
+  border: none;
+  outline: none;
+  background-color: rgba(0, 0, 0, 0.1);
+  color: rgba(255,255, 255, 0.5);
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 3px;
+}
+	
+</style>
+
+</head>
+<body onload="check()">
+<button id="request" title="Tap Here">Tap Here to enable orientation tracking</button>
+	<center>
+<div id="container" >
+<canvas style="background-image:url('aloha02.png');background-size: 100% 100% " id="myCanvas"  width="500" height="500">
+No canvas support found.
+</canvas>
+
+</div>
+	</center>
+<script>
+		
+var canvas = document.getElementById('myCanvas');
+var ctx = canvas.getContext('2d');
+var meter = document.getElementById('container');
+var img=new Image();
+img.src='alohaHub.png';
+var shout = new Image();
+shout.src='shout.png';
+var uke = new Image();
+uke.src = "ukegray.png";
+var animUke=0;
+var ukeRate = 0;
+var buttonFlash = 0;
+var buttonRef;
+var shoutOff = 1;
+var helpOn = 1;
+var string0 = new Audio('aloha0to1+.mp3');
+var string1 = new Audio('aloha1to2+.mp3');
+var string2 = new Audio('aloha2to3+.mp3');
+var string3 = new Audio('aloha3to4+.mp3');
+var string4 = new Audio('aloha4to5+.mp3');
+var helpSound = new Audio('alohaHelp02.mp3');
+string0.addEventListener('ended',function(){shoutOff = 0});
+string1.addEventListener('ended',function(){shoutOff = 0});
+string2.addEventListener('ended',function(){shoutOff = 0});
+string3.addEventListener('ended',function(){shoutOff = 0});
+string4.addEventListener('ended',function(){shoutOff = 0});
+helpSound.addEventListener('ended',function(){shoutOff = 0});
+string0.load();
+string1.load();
+string2.load();
+string3.load();
+string4.load();
+helpSound.load();
+
+
+var mousePos;
+var lastMousePosX =135;
+var timerRef
+var tiltOn = 1; //tilt active
+var tiltOff = 1; //tilt not supported - use screen touch option
+var shoutY = 250;  // 30
+var shoutA = 0;
+var shoutRef0;
+var shoutRef1;
+var shoutRef2;
+var shoutRef3;
+var shoutRef4;
+var helpRef;
+var myHeight = window.innerHeight;
+var myWidth = window.innerWidth;
+var portrait = (window.innerHeight > window.innerWidth);
+var orient = (portrait==true);
+isPortrait();
+
+function isPortrait(){
+if (portrait){	meter.style.width = window.innerWidth + 'px';
+	meter.style.height = window.innerWidth + 'px';
+			}
+else 	{meter.style.width = window.innerHeight + 'px';
+	meter.style.height =  window.innerHeight + 'px';
+	}
+//alert('Portrait '+ portrait+ ' orient ' + orient );			
+//orientation = (portrait == true);
+}
+
+//Give the Audio element a stop function
+HTMLAudioElement.prototype.stop = function()
+{
+	this.pause();
+	this.currentTime = 0.0;
+}
+
+img.onload = function() {
+
+drawAloha(135,100)
+//helpMessage();
+	};
+
+window.addEventListener("orientationchange", function() {
+//document.location.reload(false);
+
+if (window.orientation == 90 || window.orientation == -90) {
+	document.body.style.width = devWidth + 'px';
+	document.body.style.height = devHeight + 'px';
+	meter.style.width = window.innerHeight  + 'px';
+	meter.style.height =  window.innerHeight + 'px'; 
+	// landscape mode
+} 
+else {
+	document.body.style.width = devHeight + 'px';
+	document.body.style.height = devWidth + 'px';
+	meter.style.width = window.innerWidth + 'px';
+	meter.style.height = window.innerWidth  + 'px';
+	 // portrait mode
+}
+//portrait = (window.innerHeight > window.innerWidth);
+//isPortrait();
+false;
+}
+);
+
+if(window.DeviceOrientationEvent) {	
+	window.addEventListener("deviceorientation", function(e) {
+	
+	  var beta = event.beta;
+	var gamma =event.gamma;
+	
+	portrait = (window.innerHeight > window.innerWidth);
+	//isPortrait();
+	if (portrait){
+	if(beta!=null && tiltOn){
+		tiltOff=0;
+		lastMousePosX =Math.min(378,Math.max(130,380 - Math.abs(beta) *6)); 
+		drawAloha(lastMousePosX);
+		}
+	}
+	else {
+	if(gamma!=null && tiltOn){
+		tiltOff=0;
+		lastMousePosX =Math.min(378,Math.max(130,380 - Math.abs(gamma)*6)); 
+		//lastMousePosX =Math.min(378,Math.max(130,380 - gamma*6)); 
+		drawAloha(lastMousePosX);
+		}
+	}
+	  // Do something
+	}, false);
+}
+
+// Get the position of the mouse relative to the canvas
+function getMousePos(canvas, mouseEvent) {
+	var rect = canvas.getBoundingClientRect();
+	return {
+	x: mouseEvent.clientX - rect.left,
+	y: mouseEvent.clientY - rect.top
+	};
+	};  
+
+	
+// ####################################################### handle clicks
+canvas.addEventListener("click", function (e) {
+	mousePos = getMousePos(canvas, e);
+	  // scale mouse coordinates to canvas coordinates
+  mousePos.x = mousePos.x * canvas.width / canvas.clientWidth;
+   mousePos.y = mousePos.y * canvas.height / canvas.clientHeight;
+	
+	ctx.beginPath();	//green help button	###############
+    ctx.arc(425,70, 30, 0,2 * Math.PI, false);
+    if (ctx.isPointInPath(mousePos.x,mousePos.y)){
+		if(tiltOn && helpOn) {
+			clearInterval(timerRef); helpOn=0; tiltOn = 0;
+			shoutOff=1;
+		helpMessage();			
+			}
+		else if(helpOn==0) {
+		clearInterval(timerRef);  helpOn=1; tiltOn=1; cleanMeter();
+						}
+		}
+	
+		ctx.beginPath();	//blue home button	########
+    ctx.arc(75,72, 20, 0,2 * Math.PI, false);
+    if (ctx.isPointInPath(mousePos.x,mousePos.y)){
+	//alert('blue clicked');
+	if(tiltOn && helpOn) window.location = 'https://www.ukuleleorchestra.com/index.php/';
+		}
+	
+	ctx.beginPath();   // bg red button         
+    ctx.arc(253,430, 30, 0,2 * Math.PI, false);
+    if (ctx.isPointInPath(mousePos.x,mousePos.y)) {
+		cleanMeter();
+		//is_high.stop();aloha_level.stop();danger.stop();extreme.stop();
+			if (tiltOn==1){	
+				
+				if(lastMousePosX>330)		{
+					shoutOff=1;	//25
+					string4.play();
+					shout.src='shout4.png';
+					uke.src = 'ukegreen.png';
+					animUke = 1;
+					shoutRef4 = setInterval(animShout,3);
+									
+					}
+				else if(lastMousePosX>270)		{
+					shoutOff=1;	//8	
+					string3.play();
+					shout.src='shout3.png';
+					uke.src = 'uketurq.png';
+					animUke = 1;
+					shoutRef3 = setInterval(animShout,8);
+					}
+									
+				else if(lastMousePosX>200)		{
+					shoutOff=1;	
+					string2.play();
+					shout.src='shout2.png';
+					uke.src = 'ukepink.png';
+					animUke = 0;
+					shoutRef2 = setInterval(animShout,20);
+					}
+				else if(lastMousePosX>150)		{
+					shoutOff=1;
+					string1.play();
+					shout.src='shout1.png';
+					uke.src = 'ukepurp.png';
+					animUke = 0;
+					shoutRef1 = setInterval(animShout,60);
+					
+					}
+				else if(lastMousePosX<151)		{
+					shoutOff=1;
+					string0.play();
+					shout.src='shout0.png';
+					uke.src = 'ukegray.png';
+					animUke = 0;					
+					shoutRef0 = setInterval(animShout,80);
+					
+					}		
+			}
+			else {
+				drawAloha(lastMousePosX);
+			}
+					
+		tiltOn = Math.abs(tiltOn-1);
+			drawAloha(lastMousePosX);
+
+		
+		return;
+	} 
+
+    ctx.beginPath();
+    ctx.rect(135,320,240,50); 
+    if (ctx.isPointInPath(mousePos.x,mousePos.y) && tiltOff) { 
+		clearInterval(timerRef); 
+		tiltOn = 1; 
+		cleanMeter();             
+		if (lastMousePosX>mousePos.x) {
+			timerRef = setInterval(animAlohaDown,50);
+			return;
+			}
+		if (lastMousePosX<mousePos.x) {
+			timerRef = setInterval(animAloha,50);
+			return;
+			}
+			}
+	}, false);
+
+
+  function animShout(){
+	 
+		if (shoutY>-30) {
+		shoutY-=2; //shoutA+=0.2;
+		drawAloha(lastMousePosX,100);
+		ctx.drawImage(shout,12,shoutY);
+		
+		ctx.drawImage(uke,shoutY*animUke +50,shoutY);
+		//ctx.save();ctx.globalAlpha = 0.8;ctx.drawImage(shout,12,shoutY);ctx.restore()
+				}  
+				
+		else {
+			shoutY=250; //shoutA =0;
+			//shoutOff--;
+			if(!shoutOff){tiltOn=1;cleanMeter();}
+		}
+	 }	
+     
+ function animHelp(){
+	 if(!shoutOff){tiltOn=1;cleanMeter();}
+	 }     
+     
+ function cleanMeter(){
+	 	clearTimeout();
+		clearInterval(shoutRef0);clearInterval(shoutRef1);clearInterval(shoutRef2);clearInterval(shoutRef3);clearInterval(shoutRef4);
+		clearInterval(helpRef);
+		shoutY = 250;  // 30
+		//shoutA = 0;
+		string0.stop();string1.stop();string2.stop();string3.stop();string4.stop();
+		helpSound.stop();	
+		drawAloha(lastMousePosX);
+		helpOn = 1;
+		
+	 
+	 }
+     
+ function animAloha(){
+	if (lastMousePosX<mousePos.x) {
+		lastMousePosX+=5;
+		 drawAloha(lastMousePosX,100);
+					} 
+	 else clearInterval(timerRef);
+
+	  }    
+
+ function animAlohaDown(){
+	if (lastMousePosX>mousePos.x) {
+		 lastMousePosX-=5;		
+		 drawAloha(lastMousePosX,100);
+						} 
+	 else clearInterval(timerRef);	 
+	  }  
+      
+      
+      
+ function drawAloha(ax,ay){     
+   // use getContext to use the canvas for drawing
+
+	ax =Math.min(378,Math.max(130,ax)); 
+   //  (ax<135)?ax=135:ax;
+    // (ax>380)?ax=380:ax;
+	ay = 260-Math.sqrt(Math.pow(120, 2)-Math.pow((ax-255)/1.3, 2));
+	ctx.clearRect(0,0,500,500);
+	
+	ctx.beginPath();
+	ctx.moveTo(255,330);
+	ctx.lineTo(ax,ay);
+	ctx.lineWidth=6;
+	ctx.lineCap = 'round';
+	
+	ctx.strokeStyle='rgba(0,200,0,1)';
+	ctx.stroke();
+		
+	ctx.drawImage(img,222,304)
+		if (tiltOn==1)  { 
+			ctx.fillStyle = "rgba(220,50,0,0.7)";
+			}
+		else{
+			ctx.fillStyle = "rgba(170,50,0,0.7)";
+		}
+			ctx.beginPath();          
+		   	ctx.arc(252,431, 30, 0,2 * Math.PI, false);	ctx.fill();  
+
+			ctx.fillStyle = "rgba(0,0,0,1)";
+			ctx.font = 'bold 24pt sans-serif';
+			ctx.fillText('?', 414, 82);
+			ctx.fillStyle = "rgba(0,250,0,0.5)";
+			ctx.beginPath();          //draw green help button
+		   	ctx.arc(425,70, 20, 0,2 * Math.PI, false);	ctx.fill();
+		   	
+			ctx.fillStyle = "rgba(70,50,0,1)";
+		   	ctx.font = 'bold 28pt sans-serif';
+			ctx.fillText('~', 64, 85);
+		   	ctx.fillStyle = "rgba(250,250,0,0.5)";
+			ctx.beginPath();          	//draw blue link button
+		   	ctx.arc(75,72, 20, 0,2 * Math.PI, false);	ctx.fill();
+		};
+		
+function helpMessage(){
+	
+	helpSound.play();
+	gutter = 48;
+	ctx.fillStyle = "rgba(100,250,100,0.9)";
+	ctx.beginPath();
+    ctx.rect(40,100,420,270);
+    ctx.fill();
+    ctx.strokeStyle = "rgb(50,150,100)";
+    ctx.lineWidth = 6;
+	ctx.beginPath();
+    ctx.strokeRect(40,100,420,270); 
+    ctx.stroke; 
+	ctx.fillStyle = "rgb(50,50,120)";
+	ctx.font = 'bold 30pt sans-serif';
+	ctx.fillText('Aloha Meter v 0.1', gutter, 140);	
+	ctx.font = '18pt sans-serif';
+	ctx.fillText('Living in fear of that Hawaiian vibe?', gutter, 170);  
+	ctx.fillText('Set the sound on your device to high.', gutter, 200); 
+	ctx.fillText('Take it in the strumming hand, upright.', gutter, 230); 
+	ctx.fillText('Gently tilt until you find the pluck!', gutter, 260); 
+	ctx.fillText('Read the Aloha level.', gutter, 290); 
+	ctx.fillText('Press the red button for report.', gutter, 320);	
+	ctx.fillText('Press again to cancel.', gutter, 350);   
+gutter+=2;
+sh=-2;
+	ctx.fillStyle = "rgb(200,150,250)";
+	ctx.font = 'bold 30pt sans-serif';
+	ctx.fillText('Aloha Meter v 0.1', gutter, 140+sh);	
+/*
+	ctx.font = '18pt sans-serif';
+	ctx.fillText('Worried by that Hawaiian vibe?', gutter, 170+sh);  
+	ctx.fillText('You need no longer live in fear.', gutter, 200+sh); 
+	ctx.fillText('Hold the meter in a reclining hand.', gutter, 230+sh); 
+	ctx.fillText('Gently tilt meter to find the pluck.', gutter, 260+sh); 
+	ctx.fillText('Can you feel that aloha influence?', gutter, 290+sh); 
+	ctx.fillText('', gutter, 320+sh);	
+	ctx.fillText('Press the red button for status report.', gutter, 350+sh); 
+*/
+	helpRef = setInterval(animHelp,500);
+	}
+
+	
+function check() {
+    var match = (navigator.appVersion).match(/OS (\d+)_(\d+)_?(\d+)?/),
+        version;
+
+    if (match !== undefined && match !== null) {
+        version = [
+            parseInt(match[1], 10),
+            parseInt(match[2], 10),
+            parseInt(match[3] || 0, 10)
+        ];
+        ver=parseFloat(version.join('.'));
+	if (ver < 13) {
+            document.getElementById('request').style.visibility = 'hidden';
+        } else {
+            document.getElementById('request').style.visibility = 'visible';
+        }
+
+    }
+    else {
+	document.getElementById('request').style.visibility = 'hidden';
+	}
+}
+
+	  if (location.protocol != 'https:') {
+   location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
+  }
+ 
+function requestT () {
+      if (typeof(DeviceMotionEvent) !== 'undefined' && typeof(DeviceMotionEvent.requestPermission) === 'function') {
+          
+          DeviceMotionEvent.requestPermission()
+          .then(response => {
+	alert('Orientation tracking '+ response);
+          
+            if (response == 'granted') {
+              window.addEventListener('devicemotion', (e) => {
+               document.getElementById('request').style.visibility='hidden';
+              })
+            }
+          })
+      .catch(console.error)
+      }else {
+          alert('DeviceMotionEvent is not defined');
+      }
+
+  }
+  document.getElementById('request').onclick = requestT;
+
+    </script>
+  </body>
+</html>      
