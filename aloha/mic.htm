@@ -572,7 +572,25 @@ function requestT () {
     window["microphoneLevel"] = wrapperAudioMeter;
 })();
 
-	
+/**
+ * Execute the script once the window loads 
+ **/
+window.onload = function(){
+
+    // Request microphone to display level
+    window.microphoneLevel({
+        onResult: function(meter , time){
+            if (meter.checkClipping()) {
+                console.warn(meter.volume);
+            } else {
+                console.log(meter.volume);
+            }
+        },
+        onError: function(err){
+            console.error(err);
+        }
+    });
+};	
 	
 	
 	</script>
