@@ -86,7 +86,7 @@ var string1 = new Audio('aloha1to2+.mp3');
 var string2 = new Audio('aloha2to3+.mp3');
 var string3 = new Audio('aloha3to4+.mp3');
 var string4 = new Audio('aloha4to5+.mp3');
-var helpSound = new Audio('alohaHelp02.mp3');
+//var helpSound = new Audio('alohaHelp02.mp3');
 string0.addEventListener('ended',function(){shoutOff = 0});
 string1.addEventListener('ended',function(){shoutOff = 0});
 string2.addEventListener('ended',function(){shoutOff = 0});
@@ -230,7 +230,12 @@ canvas.addEventListener("click", function (e) {
 	//alert('blue clicked');
 	if(tiltOn && helpOn) window.location = 'https://www.ukuleleorchestra.com/index.php/';
 		}
-	
+    ctx.beginPath();	//blue home button	########
+	ctx.arc(75,432, 20, 0,2 * Math.PI, false)
+    if (ctx.isPointInPath(mousePos.x,mousePos.y)){
+	alert('blue clicked');
+	//if(tiltOn && helpOn) window.location = 'https://www.ukuleleorchestra.com/index.php/';
+		}	
 	ctx.beginPath();   // bg red button         
     ctx.arc(253,430, 30, 0,2 * Math.PI, false);
     if (ctx.isPointInPath(mousePos.x,mousePos.y)) {
