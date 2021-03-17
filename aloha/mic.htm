@@ -376,7 +376,7 @@ canvas.addEventListener("click", function (e) {
 	ay = 260-Math.sqrt(Math.pow(120, 2)-Math.pow((ax-255)/1.3, 2));
 	ctx.clearRect(0,0,500,500);
 	
-	ctx.beginPath();
+	ctx.beginPath();    // draw meter line
 	ctx.moveTo(255,330);
 	ctx.lineTo(ax,ay);
 	ctx.lineWidth=6;
@@ -406,8 +406,15 @@ canvas.addEventListener("click", function (e) {
 		   	ctx.font = 'bold 28pt sans-serif';
 			ctx.fillText('~', 64, 85);
 		   	ctx.fillStyle = "rgba(250,250,0,0.5)";
-			ctx.beginPath();          	//draw blue link button
+			ctx.beginPath();          	//draw yellow link button
 		   	ctx.arc(75,72, 20, 0,2 * Math.PI, false);	ctx.fill();
+	 
+	 		ctx.fillStyle = "rgba(70,50,0,1)";
+		   	ctx.font = 'bold 28pt sans-serif';
+			ctx.fillText('m', 64, 430);
+		   	ctx.fillStyle = "rgba(0,0,250,0.5)";
+			ctx.beginPath();          	//draw blue link button
+		   	ctx.arc(75,430, 20, 0,2 * Math.PI, false);	ctx.fill();
 		};
 		
 function helpMessage(){
