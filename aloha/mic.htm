@@ -234,6 +234,7 @@ canvas.addEventListener("click", function (e) {
 	ctx.arc(75,432, 20, 0,2 * Math.PI, false)
     if (ctx.isPointInPath(mousePos.x,mousePos.y)){
 	alert('blue clicked');
+	    audioContext = new AudioContext();
 	//if(tiltOn && helpOn) window.location = 'https://www.ukuleleorchestra.com/index.php/';
 		}	
 	ctx.beginPath();   // bg red button         
