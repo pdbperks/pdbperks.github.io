@@ -235,7 +235,7 @@ canvas.addEventListener("click", function (e) {
     ctx.beginPath();	//blue mic button	########
 	ctx.arc(75,432, 20, 0,2 * Math.PI, false)
     if (ctx.isPointInPath(mousePos.x,mousePos.y)){
-	alert('blue clicked');
+	//alert('blue clicked');
 	    start();
 	    //audioContext = new AudioContext();
 	//if(tiltOn && helpOn) window.location = 'https://www.ukuleleorchestra.com/index.php/';
@@ -561,19 +561,20 @@ function handleSuccess(stream) {
       alert(e);
       return;
     }
-	  /*
+	  
     meterRefresh = setInterval(() => {
-      instantMeter.value = instantValueDisplay.innerText =
+     /* instantMeter.value = instantValueDisplay.innerText =
         soundMeter.instant.toFixed(2);
       slowMeter.value = slowValueDisplay.innerText =
         soundMeter.slow.toFixed(2);
       clipMeter.value = clipValueDisplay.innerText =
-        soundMeter.clip;
-    }, 200);
-	  */
-	  //console.log(soundMeter.instant.toFixed(2));soundMeter.instant.toFixed(2)//Math.abs(soundMeter.instant.toFixed(2)) *10000000
-	  lastMousePosX = Math.min(378,Math.max(130,380 - Math.random() * 250))
+        soundMeter.clip;*/
+         lastMousePosX = Math.min(378,Math.max(130,380 - Math.random() * 250))
 	  drawAloha(lastMousePosX,100);
+    }, 200);
+	  
+	  //console.log(soundMeter.instant.toFixed(2));soundMeter.instant.toFixed(2)//Math.abs(soundMeter.instant.toFixed(2)) *10000000
+
 	  //drawAloha(200,100);
   });
 }
