@@ -237,13 +237,16 @@ canvas.addEventListener("click", function (e) {
 	
     ctx.beginPath();	//blue mic button	########
 	ctx.arc(75,432, 20, 0,2 * Math.PI, false)
-    if (ctx.isPointInPath(mousePos.x,mousePos.y) && micOn == 0){  //alert('blue clicked on');
-	micOn = 1;    
-        start();
-		}
-    if (ctx.isPointInPath(mousePos.x,mousePos.y) && micOn){   //alert('blue clicked off');
-	micOn = 0;    
-        stop();
+    if (ctx.isPointInPath(mousePos.x,mousePos.y)){  //alert('blue clicked on');
+	if (micon){
+	 micOn = 0;    
+         stop();
+	}
+	else{	
+	 micOn = 1;    
+         start();
+	    }
+
 		}
 	
 	
@@ -585,7 +588,7 @@ function start() {
 
 function stop() {
   console.log('Stopping local stream');
-  window.stream.getTracks().forEach(track => track.stop());
+  //window.stream.getTracks().forEach(track => track.stop());
   window.soundMeter.stop();
   clearInterval(meterRefresh);
 }
