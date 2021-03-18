@@ -219,11 +219,12 @@ canvas.addEventListener("click", function (e) {
 		if(tiltOn && helpOn) {
 			clearInterval(timerRef); helpOn=0; tiltOn = 0;
 			shoutOff=1;
-			stop();  //stop mic read
+			if(micOn) stop();  //stop mic read
 		helpMessage();			
 			}
 		else if(helpOn==0) {
-		clearInterval(timerRef);  helpOn=1; tiltOn=1; cleanMeter(); start();
+		clearInterval(timerRef);  helpOn=1; tiltOn=1; cleanMeter(); 
+			if(micOn) start();
 						}
 		}
 	
@@ -437,7 +438,6 @@ canvas.addEventListener("click", function (e) {
 		};
 		
 function helpMessage(){
-	stop();
 	//helpSound.play();
 	gutter = 48;
 	ctx.fillStyle = "rgba(100,250,100,0.9)";
@@ -457,9 +457,9 @@ function helpMessage(){
 	ctx.fillText('Set the sound on your device to high.', gutter, 200); 
 	ctx.fillText('Press the blue microphone button (!)', gutter, 230); 
 	ctx.fillText('Wait for the audio level to stabilize.', gutter, 260); 
-	ctx.fillText('Press the red button for report.', gutter, 290); 
+	ctx.fillText('Press the red button for status report.', gutter, 290); 
 	ctx.fillText('Read the Aloha level.', gutter, 320);	
-	ctx.fillText('Press again to cancel.', gutter, 350);   
+	ctx.fillText('Press blue button to restart meter.', gutter, 350);   
 gutter+=2;
 sh=-2;
 	ctx.fillStyle = "rgb(200,150,250)";
@@ -538,20 +538,7 @@ function requestT () {
 /* global AudioContext, SoundMeter */
 
 'use strict';
-/*
-const startButton = document.getElementById('startButton');
-const stopButton = document.getElementById('stopButton');
-startButton.onclick = start;
-stopButton.onclick = stop;
 
-const instantMeter = document.querySelector('#instant meter');
-const slowMeter = document.querySelector('#slow meter');
-const clipMeter = document.querySelector('#clip meter');
-
-const instantValueDisplay = document.querySelector('#instant .value');
-const slowValueDisplay = document.querySelector('#slow .value');
-const clipValueDisplay = document.querySelector('#clip .value');
-*/
 // Put variables in global scope to make them available to the browser console.
 const constraints = window.constraints = {
   audio: true,
@@ -572,19 +559,10 @@ function handleSuccess(stream) {
     }
 	  
     meterRefresh = setInterval(() => {
-     /* instantMeter.value = instantValueDisplay.innerText =
-        soundMeter.instant.toFixed(2);
-      slowMeter.value = slowValueDisplay.innerText =
-        soundMeter.slow.toFixed(2);
-      clipMeter.value = clipValueDisplay.innerText =
-        soundMeter.clip;*/
+     /* instant slow clip*/
          lastMousePosX = Math.min(378,Math.max(130,130 + Math.abs(soundMeter.slow.toFixed(2)) *500))
 	  drawAloha(lastMousePosX,100);
     }, 200);
-	  //lastMousePosX = Math.min(378,Math.max(130,380 - Math.abs(soundMeter.slow.toFixed(2)) *1000))
-	  //console.log(soundMeter.instant.toFixed(2));soundMeter.instant.toFixed(2)//Math.abs(soundMeter.instant.toFixed(2)) *10000000
-
-	  //drawAloha(200,100);
   });
 }
 
@@ -595,9 +573,7 @@ function handleError(error) {
 
 function start() {
   console.log('Requesting local stream');
-  //startButton.disabled = true;
-  //stopButton.disabled = false;
-micOn = 1;
+  micOn = 1;
   try {
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     window.audioContext = new AudioContext();
@@ -613,16 +589,10 @@ micOn = 1;
 
 function stop() {
   console.log('Stopping local stream');
-micOn = 0;	
-  //startButton.disabled = false;
-  //stopButton.disabled = true;
-
+  micOn = 0;	
   window.stream.getTracks().forEach(track => track.stop());
   window.soundMeter.stop();
   clearInterval(meterRefresh);
-  //instantMeter.value = instantValueDisplay.innerText = '';
-  //slowMeter.value = slowValueDisplay.innerText = '';
-  //clipMeter.value = clipValueDisplay.innerText = '';
 }
 	
 	</script>
