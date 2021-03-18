@@ -219,10 +219,11 @@ canvas.addEventListener("click", function (e) {
 		if(tiltOn && helpOn) {
 			clearInterval(timerRef); helpOn=0; tiltOn = 0;
 			shoutOff=1;
+			stop();  //stop mic read
 		helpMessage();			
 			}
 		else if(helpOn==0) {
-		clearInterval(timerRef);  helpOn=1; tiltOn=1; cleanMeter();
+		clearInterval(timerRef);  helpOn=1; tiltOn=1; cleanMeter(); start();
 						}
 		}
 	
@@ -237,10 +238,7 @@ canvas.addEventListener("click", function (e) {
 	ctx.arc(75,432, 20, 0,2 * Math.PI, false)
     if (ctx.isPointInPath(mousePos.x,mousePos.y) && micOn == 0){
 	//alert('blue clicked');
-	    
-	    start();
-	    //audioContext = new AudioContext();
-	//if(tiltOn && helpOn) window.location = 'https://www.ukuleleorchestra.com/index.php/';
+        start();
 		}
 	
 	ctx.beginPath();   // bg red button         
@@ -439,8 +437,8 @@ canvas.addEventListener("click", function (e) {
 		};
 		
 function helpMessage(){
-	
-	helpSound.play();
+	stop();
+	//helpSound.play();
 	gutter = 48;
 	ctx.fillStyle = "rgba(100,250,100,0.9)";
 	ctx.beginPath();
@@ -457,10 +455,10 @@ function helpMessage(){
 	ctx.font = '18pt sans-serif';
 	ctx.fillText('Living in fear of that Hawaiian vibe?', gutter, 170);  
 	ctx.fillText('Set the sound on your device to high.', gutter, 200); 
-	ctx.fillText('Take it in the strumming hand, upright.', gutter, 230); 
-	ctx.fillText('Gently tilt until you find the pluck!', gutter, 260); 
-	ctx.fillText('Read the Aloha level.', gutter, 290); 
-	ctx.fillText('Press the red button for report.', gutter, 320);	
+	ctx.fillText('Press the blue microphone button (!)', gutter, 230); 
+	ctx.fillText('Wait for the audio level to stabilize.', gutter, 260); 
+	ctx.fillText('Press the red button for report.', gutter, 290); 
+	ctx.fillText('Read the Aloha level.', gutter, 320);	
 	ctx.fillText('Press again to cancel.', gutter, 350);   
 gutter+=2;
 sh=-2;
