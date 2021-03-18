@@ -1,3 +1,6 @@
+this license included while mic.htm relies on javascript code for audio handling by WebRTC project.
+https://github.com/webrtc/samples/tree/gh-pages/src/content/getusermedia/volume
+
 Copyright (c) 2014, The WebRTC project authors. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
