@@ -572,7 +572,7 @@ function handleSuccess(stream) {
     }, 200);
 	  */
 	  //console.log(soundMeter.instant.toFixed(2));soundMeter.instant.toFixed(2)//Math.abs(soundMeter.instant.toFixed(2)) *10000000
-	  lastMousePosX = Math.min(378,Math.max(130,380 - 50))
+	  lastMousePosX = Math.min(378,Math.max(130,380 - Math.random() * 250))
 	  drawAloha(lastMousePosX,100);
 	  //drawAloha(200,100);
   });
