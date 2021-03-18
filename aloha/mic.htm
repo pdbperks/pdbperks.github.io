@@ -237,16 +237,23 @@ canvas.addEventListener("click", function (e) {
 	
     ctx.beginPath();	//blue mic button	########
 	ctx.arc(75,432, 20, 0,2 * Math.PI, false)
-    if (ctx.isPointInPath(mousePos.x,mousePos.y) && micOn == 0){
-	//alert('blue clicked');
+    if (ctx.isPointInPath(mousePos.x,mousePos.y) && micOn == 0){  //alert('blue clicked on');
+	micOn = 1;    
         start();
 		}
+    if (ctx.isPointInPath(mousePos.x,mousePos.y) && micOn){   //alert('blue clicked off');
+	micOn = 0;    
+        stop();
+		}
+	
 	
 	ctx.beginPath();   // bg red button         
     ctx.arc(253,430, 30, 0,2 * Math.PI, false);
     if (ctx.isPointInPath(mousePos.x,mousePos.y)) {
 		cleanMeter();
+	    micOn = 0;
 	    stop();  //stop microphone read
+	    
 		//is_high.stop();aloha_level.stop();danger.stop();extreme.stop();
 			if (tiltOn==1){	
 				
@@ -433,7 +440,7 @@ canvas.addEventListener("click", function (e) {
 		   	ctx.font = 'bold 28pt sans-serif';
 			ctx.fillText('#', 414, 446);
 		   	ctx.fillStyle = "rgba(0,250,250,0.5)";
-			ctx.beginPath();          	//draw blue link button
+			ctx.beginPath();          	//draw turqouise link button
 		   	ctx.arc(425,432, 20, 0,2 * Math.PI, false);	ctx.fill();
 		};
 		
@@ -451,7 +458,7 @@ function helpMessage(){
     ctx.stroke; 
 	ctx.fillStyle = "rgb(50,50,120)";
 	ctx.font = 'bold 30pt sans-serif';
-	ctx.fillText('Aloha Meter v 0.1', gutter, 140);	
+	ctx.fillText('Aloha Meter v 0.2', gutter, 140);	
 	ctx.font = '18pt sans-serif';
 	ctx.fillText('Living in fear of that Hawaiian vibe?', gutter, 170);  
 	ctx.fillText('Set the sound on your device to high.', gutter, 200); 
@@ -464,17 +471,7 @@ gutter+=2;
 sh=-2;
 	ctx.fillStyle = "rgb(200,150,250)";
 	ctx.font = 'bold 30pt sans-serif';
-	ctx.fillText('Aloha Meter v 0.1', gutter, 140+sh);	
-/*
-	ctx.font = '18pt sans-serif';
-	ctx.fillText('Worried by that Hawaiian vibe?', gutter, 170+sh);  
-	ctx.fillText('You need no longer live in fear.', gutter, 200+sh); 
-	ctx.fillText('Hold the meter in a reclining hand.', gutter, 230+sh); 
-	ctx.fillText('Gently tilt meter to find the pluck.', gutter, 260+sh); 
-	ctx.fillText('Can you feel that aloha influence?', gutter, 290+sh); 
-	ctx.fillText('', gutter, 320+sh);	
-	ctx.fillText('Press the red button for status report.', gutter, 350+sh); 
-*/
+	ctx.fillText('Aloha Meter v 0.2', gutter, 140+sh);	
 	helpRef = setInterval(animHelp,500);
 	}
 
@@ -573,7 +570,6 @@ function handleError(error) {
 
 function start() {
   console.log('Requesting local stream');
-  micOn = 1;
   try {
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     window.audioContext = new AudioContext();
@@ -589,7 +585,6 @@ function start() {
 
 function stop() {
   console.log('Stopping local stream');
-  micOn = 0;	
   window.stream.getTracks().forEach(track => track.stop());
   window.soundMeter.stop();
   clearInterval(meterRefresh);
