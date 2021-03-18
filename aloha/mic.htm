@@ -238,7 +238,7 @@ canvas.addEventListener("click", function (e) {
     ctx.beginPath();	//blue mic button	########
 	ctx.arc(75,432, 20, 0,2 * Math.PI, false)
     if (ctx.isPointInPath(mousePos.x,mousePos.y)){  //alert('blue clicked on');
-	if (micon){
+	if (micOn){
 	 micOn = 0;    
          stop();
 	}
