@@ -569,7 +569,7 @@ function handleSuccess(stream) {
         soundMeter.slow.toFixed(2);
       clipMeter.value = clipValueDisplay.innerText =
         soundMeter.clip;*/
-         lastMousePosX = Math.min(378,Math.max(130,130 + Math.abs(soundMeter.slow.toFixed(2)) *500))
+         lastMousePosX = Math.min(378,Math.max(130,130 + Math.abs(soundMeter.instant.toFixed(2)) *500))
 	  drawAloha(lastMousePosX,100);
     }, 200);
 	  //lastMousePosX = Math.min(378,Math.max(130,380 - Math.abs(soundMeter.slow.toFixed(2)) *1000))
