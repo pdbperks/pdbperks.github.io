@@ -82,6 +82,7 @@ var buttonFlash = 0;
 var buttonRef;
 var shoutOff = 1;
 var helpOn = 1;
+var micOn = 0;
 var string0 = new Audio('aloha0to1+.mp3');
 var string1 = new Audio('aloha1to2+.mp3');
 var string2 = new Audio('aloha2to3+.mp3');
@@ -234,8 +235,9 @@ canvas.addEventListener("click", function (e) {
 	
     ctx.beginPath();	//blue mic button	########
 	ctx.arc(75,432, 20, 0,2 * Math.PI, false)
-    if (ctx.isPointInPath(mousePos.x,mousePos.y)){
+    if (ctx.isPointInPath(mousePos.x,mousePos.y) && micOn){
 	//alert('blue clicked');
+	    
 	    start();
 	    //audioContext = new AudioContext();
 	//if(tiltOn && helpOn) window.location = 'https://www.ukuleleorchestra.com/index.php/';
@@ -245,6 +247,7 @@ canvas.addEventListener("click", function (e) {
     ctx.arc(253,430, 30, 0,2 * Math.PI, false);
     if (ctx.isPointInPath(mousePos.x,mousePos.y)) {
 		cleanMeter();
+	    stop();  //stop microphone read
 		//is_high.stop();aloha_level.stop();danger.stop();extreme.stop();
 			if (tiltOn==1){	
 				
@@ -379,6 +382,7 @@ canvas.addEventListener("click", function (e) {
       
  function drawAloha(ax,ay){     
    // use getContext to use the canvas for drawing
+   // place buttons and other furniture
 
 	ax =Math.min(378,Math.max(130,ax)); 
    //  (ax<135)?ax=135:ax;
@@ -425,6 +429,13 @@ canvas.addEventListener("click", function (e) {
 		   	ctx.fillStyle = "rgba(0,0,250,0.5)";
 			ctx.beginPath();          	//draw blue link button
 		   	ctx.arc(75,432, 20, 0,2 * Math.PI, false);	ctx.fill();
+	 
+	 		ctx.fillStyle = "rgba(70,50,0,1)";
+		   	ctx.font = 'bold 28pt sans-serif';
+			ctx.fillText('#', 414, 446);
+		   	ctx.fillStyle = "rgba(0,250,250,0.5)";
+			ctx.beginPath();          	//draw blue link button
+		   	ctx.arc(425,432, 20, 0,2 * Math.PI, false);	ctx.fill();
 		};
 		
 function helpMessage(){
@@ -588,7 +599,7 @@ function start() {
   console.log('Requesting local stream');
   //startButton.disabled = true;
   //stopButton.disabled = false;
-
+micOn = 1;
   try {
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     window.audioContext = new AudioContext();
@@ -604,15 +615,16 @@ function start() {
 
 function stop() {
   console.log('Stopping local stream');
-  startButton.disabled = false;
-  stopButton.disabled = true;
+micOn = 0;	
+  //startButton.disabled = false;
+  //stopButton.disabled = true;
 
   window.stream.getTracks().forEach(track => track.stop());
   window.soundMeter.stop();
   clearInterval(meterRefresh);
-  instantMeter.value = instantValueDisplay.innerText = '';
-  slowMeter.value = slowValueDisplay.innerText = '';
-  clipMeter.value = clipValueDisplay.innerText = '';
+  //instantMeter.value = instantValueDisplay.innerText = '';
+  //slowMeter.value = slowValueDisplay.innerText = '';
+  //clipMeter.value = clipValueDisplay.innerText = '';
 }
 	
 	</script>
