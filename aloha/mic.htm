@@ -561,6 +561,7 @@ function handleSuccess(stream) {
       alert(e);
       return;
     }
+	  /*
     meterRefresh = setInterval(() => {
       instantMeter.value = instantValueDisplay.innerText =
         soundMeter.instant.toFixed(2);
@@ -569,6 +570,8 @@ function handleSuccess(stream) {
       clipMeter.value = clipValueDisplay.innerText =
         soundMeter.clip;
     }, 200);
+	  */
+	  drawAloha(soundMeter.instant.toFixed(2),100);
   });
 }
 
