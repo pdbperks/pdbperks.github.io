@@ -168,34 +168,7 @@ else {
 false;
 }
 );
-/*
-if(window.DeviceOrientationEvent) {	
-	window.addEventListener("deviceorientation", function(e) {
-	
-	  var beta = event.beta;
-	var gamma =event.gamma;
-	
-	portrait = (window.innerHeight > window.innerWidth);
-	//isPortrait();
-	if (portrait){
-	if(beta!=null && tiltOn){
-		tiltOff=0;
-		lastMousePosX =Math.min(378,Math.max(130,380 - Math.abs(beta) *6)); 
-		drawAloha(lastMousePosX);
-		}
-	}
-	else {
-	if(gamma!=null && tiltOn){
-		tiltOff=0;
-		lastMousePosX =Math.min(378,Math.max(130,380 - Math.abs(gamma)*6)); 
-		//lastMousePosX =Math.min(378,Math.max(130,380 - gamma*6)); 
-		drawAloha(lastMousePosX);
-		}
-	}
-	  // Do something
-	}, false);
-}
-*/
+
 // Get the position of the mouse relative to the canvas
 function getMousePos(canvas, mouseEvent) {
 	var rect = canvas.getBoundingClientRect();
@@ -219,12 +192,12 @@ canvas.addEventListener("click", function (e) {
 		if(tiltOn && helpOn) {
 			clearInterval(timerRef); helpOn=0; tiltOn = 0;
 			shoutOff=1;
-			if(micOn) stop();  //stop mic read
+			if(micOn) stopMic();  //stop mic read
 		helpMessage();			
 			}
 		else if(helpOn==0) {
 		clearInterval(timerRef);  helpOn=1; tiltOn=1; cleanMeter(); 
-			if(micOn) start();
+			if(micOn) startMic();
 						}
 		}
 	
@@ -240,11 +213,11 @@ canvas.addEventListener("click", function (e) {
     if (ctx.isPointInPath(mousePos.x,mousePos.y)){  //alert('blue clicked on');
 	if (micOn){
 	 micOn = 0;    
-         stop();
+         stopMic();
 	}
 	else{	
 	 micOn = 1;    
-         start();
+         startMic();
 	    }
 
 		}
@@ -255,7 +228,7 @@ canvas.addEventListener("click", function (e) {
     if (ctx.isPointInPath(mousePos.x,mousePos.y)) {
 		cleanMeter();
 	    micOn = 0;
-	    stop();  //stop microphone read
+	    stopMic();  //stop microphone read
 	    
 		//is_high.stop();aloha_level.stop();danger.stop();extreme.stop();
 			if (tiltOn==1){	
@@ -478,54 +451,7 @@ sh=-2;
 	helpRef = setInterval(animHelp,500);
 	}
 
-	
-function check() {
-    var match = (navigator.appVersion).match(/OS (\d+)_(\d+)_?(\d+)?/),
-        version;
 
-    if (match !== undefined && match !== null) {
-        version = [
-            parseInt(match[1], 10),
-            parseInt(match[2], 10),
-            parseInt(match[3] || 0, 10)
-        ];
-        ver=parseFloat(version.join('.'));
-	if (ver < 13) {
-            document.getElementById('request').style.visibility = 'hidden';
-        } else {
-            document.getElementById('request').style.visibility = 'visible';
-        }
-
-    }
-    else {
-	document.getElementById('request').style.visibility = 'hidden';
-	}
-}
-
-	  if (location.protocol != 'https:') {
-   location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
-  }
- 
-function requestT () {
-      if (typeof(DeviceMotionEvent) !== 'undefined' && typeof(DeviceMotionEvent.requestPermission) === 'function') {
-          
-          DeviceMotionEvent.requestPermission()
-          .then(response => {
-	alert('Orientation tracking '+ response);
-          
-            if (response == 'granted') {
-              window.addEventListener('devicemotion', (e) => {
-               document.getElementById('request').style.visibility='hidden';
-              })
-            }
-          })
-      .catch(console.error)
-      }else {
-          alert('DeviceMotionEvent is not defined');
-      }
-
-  }
-  //document.getElementById('request').onclick = requestT;
 //################################################# audio main
 	/*
  *  Copyright (c) 2015 The WebRTC project authors. All Rights Reserved.
@@ -571,7 +497,7 @@ function handleError(error) {
 }
 
 
-function start() {
+function startMic() {
   console.log('Requesting local stream');
   try {
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -586,7 +512,7 @@ function start() {
       .catch(handleError);
 }
 
-function stop() {
+function stopMic() {
   console.log('Stopping local stream');
   //window.stream.getTracks().forEach(track => track.stop());
   window.soundMeter.stop();
