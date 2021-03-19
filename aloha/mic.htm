@@ -83,6 +83,7 @@ var buttonRef;
 var shoutOff = 1;
 var helpOn = 1;
 var micOn = 0;
+var calibration = 500;
 var string0 = new Audio('aloha0to1+.mp3');
 var string1 = new Audio('aloha1to2+.mp3');
 var string2 = new Audio('aloha2to3+.mp3');
@@ -296,6 +297,7 @@ canvas.addEventListener("click", function (e) {
     ctx.beginPath();
     ctx.rect(135,320,240,50); 
     if (ctx.isPointInPath(mousePos.x,mousePos.y) && tiltOff) { 
+	    //calibration = (135 - mouse.x) * 10;
 		clearInterval(timerRef); 
 		tiltOn = 1; 
 		cleanMeter();             
@@ -492,7 +494,7 @@ function handleSuccess(stream) {
 	  
     meterRefresh = setInterval(() => {
      /* instant slow clip*/
-         lastMousePosX = Math.min(378,Math.max(130,130 + Math.abs(soundMeter.slow.toFixed(2)) *500))
+         lastMousePosX = Math.min(378,Math.max(130,130 + Math.abs(soundMeter.slow.toFixed(2)) *calibration))
 	  drawAloha(lastMousePosX,100);
     }, 200);
   });
