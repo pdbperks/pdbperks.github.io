@@ -298,8 +298,9 @@ canvas.addEventListener("click", function (e) {
     ctx.rect(135,320,240,50); 
     if (ctx.isPointInPath(mousePos.x,mousePos.y) && tiltOff) { 
 	    calibration = Math.round((mousePos.x - 135) * 10);
-	    alert(calibration);
-		clearInterval(timerRef); 
+	    //alert(calibration);
+	    drawAloha(mousePos.x,100);
+	/*	clearInterval(timerRef); 
 		tiltOn = 1; 
 		cleanMeter();             
 		if (lastMousePosX>mousePos.x) {
@@ -310,7 +311,7 @@ canvas.addEventListener("click", function (e) {
 			timerRef = setInterval(animAloha,50);
 			return;
 			}
-			
+	*/		
 			}
 	}, false);
 
