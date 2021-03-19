@@ -297,7 +297,7 @@ canvas.addEventListener("click", function (e) {
     ctx.beginPath();
     ctx.rect(135,320,240,50); 
     if (ctx.isPointInPath(mousePos.x,mousePos.y) && tiltOff) { 
-	    //calibration = (135 - mouse.x) * 10;
+	    
 		clearInterval(timerRef); 
 		tiltOn = 1; 
 		cleanMeter();             
@@ -309,6 +309,7 @@ canvas.addEventListener("click", function (e) {
 			timerRef = setInterval(animAloha,50);
 			return;
 			}
+			calibration = (135 - mouse.x) * 10;
 			}
 	}, false);
 
