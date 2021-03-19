@@ -297,7 +297,7 @@ canvas.addEventListener("click", function (e) {
     ctx.beginPath();
     ctx.rect(135,320,240,50); 
     if (ctx.isPointInPath(mousePos.x,mousePos.y) && tiltOff) { 
-	    calibration = (135 - mousePos.x) * 10;
+	    calibration = Math.round((mousePos.x - 135) * 10);
 	    alert(calibration);
 		clearInterval(timerRef); 
 		tiltOn = 1; 
