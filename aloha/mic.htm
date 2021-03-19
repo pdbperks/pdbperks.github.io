@@ -227,9 +227,11 @@ canvas.addEventListener("click", function (e) {
     ctx.arc(253,430, 30, 0,2 * Math.PI, false);
     if (ctx.isPointInPath(mousePos.x,mousePos.y)) {
 		cleanMeter();
-	    micOn = 0;
-	    stopMic();  //stop microphone read
 	    
+	if (micOn){
+	 micOn = 0;    
+         stopMic();
+	}
 		//is_high.stop();aloha_level.stop();danger.stop();extreme.stop();
 			if (tiltOn==1){	
 				
