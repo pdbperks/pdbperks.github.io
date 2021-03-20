@@ -215,6 +215,7 @@ canvas.addEventListener("click", function (e) {
 	if (micOn){
 	 micOn = 0;    
          stopMic();
+		cleanMeter();
 		drawAloha(lastMousePosX,100);
 	}
 	else{	
