@@ -297,7 +297,7 @@ canvas.addEventListener("click", function (e) {
     ctx.beginPath();
     ctx.rect(135,320,240,50); 
     if (ctx.isPointInPath(mousePos.x,mousePos.y) && tiltOff) { 
-	    calibration = Math.round((mousePos.x - 135) * 10);
+	    calibration = Math.round((mousePos.x - 135)) * 20;
 	    //alert(calibration);
 	    drawAloha(mousePos.x,100);
 	/*	clearInterval(timerRef); 
@@ -497,7 +497,8 @@ function handleSuccess(stream) {
 	  
     meterRefresh = setInterval(() => {
      /* instant slow clip*/
-         lastMousePosX = Math.min(378,Math.max(130,130 + Math.abs(soundMeter.slow.toFixed(2)) *calibration))
+         //lastMousePosX = Math.min(378,Math.max(130,130 + Math.abs(soundMeter.instant.toFixed(2)) *calibration))
+	  lastMousePosX = Math.min(378,Math.max(130,130 + Math.abs(soundMeter.instant) *calibration))  
 	  drawAloha(lastMousePosX,100);
     }, 200);
   });
